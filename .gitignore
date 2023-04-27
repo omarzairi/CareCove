@@ -1,3 +1,4 @@
+/backend/node_modules/
 /backend/node_modules/.bin/conc
 /backend/node_modules/.bin/conc.cmd
 /backend/node_modules/.bin/conc.ps1
