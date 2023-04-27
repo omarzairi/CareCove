@@ -6,7 +6,7 @@ import Calender from "../models/Calender.js";
 const calenderControl = express.Router();
 
 calenderControl.post(
-  "/register",
+  "/addCalender",
   asyncHandler(async (req, res) => {
     const { availability, hour, date } = req.body;
     
