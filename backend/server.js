@@ -11,7 +11,7 @@ app.use(express.urlencoded());
 app.use(express.json());
 connectDB()
 app.get("/", (req, res) => {
-    res.send("<center><b>Welcome To CareCove </b> <br>api running :)</center");
+    res.send("<center><b>Welcome To CareCove </b> <br>api running :)</center>");
 });
 app.listen(5000, console.log("app running...."));
 
