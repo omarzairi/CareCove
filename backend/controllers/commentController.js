@@ -13,6 +13,7 @@ commentControl.post(
             text,
             rating,
             date,
+            doctor
         });
         const createdComment = await comment.save();
         res.status(201).json(createdComment);
