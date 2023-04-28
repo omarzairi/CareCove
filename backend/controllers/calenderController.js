@@ -20,11 +20,12 @@ calenderControl.post(
                     availability: createdCalender.availability,
                     hour: createdCalender.hour,
                     date: createdCalender.date,
+                    doctor: createdCalender.doctor,
                     
                     msg: "Calender Created Successfully!",});
             }
             else{
-                res.status(401).json({ msg: "Something Went Wrong Invalid User Data!" });
+                res.status(401).json({ msg: "Something Went Wrong Invalid Calender Data!" });
             }
         }
   )

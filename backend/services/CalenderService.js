@@ -2,11 +2,12 @@ import Calender from "../models/Calender.js";
 import res from "express/lib/response.js";
 
 const calenderService = {
-    async createCalender({availability, hour, date}) {
+    async createCalender({availability, hour, date,doctor}) {
          const calender = await Calender.create({
             availability,
             hour,
             date,
+            doctor
              
          });
          return await calender.save();
@@ -31,6 +32,8 @@ const calenderService = {
          calender.availability = updateData.availability || calender.availability;
          calender.hour = updateData.hour || calender.hour;
          calender.date = updateData.date || calender.date;
+         calender.doctor = updateData.doctor || calender.doctor;
+
          const updatedCalender = await calender.save();
          return updatedCalender.toObject();
  
