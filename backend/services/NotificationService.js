@@ -1,6 +1,10 @@
+import asyncHandler from "express-async-handler";
+import express from "express";
+import bcrypt from "bcryptjs";
+import res from "express/lib/response.js";
 const notificationService = {
-   async createPerson({action, dateNotification, person}) {
-        const person = await Person.create({
+   async createNotification({action, dateNotification, person}) {
+        const notification = await Notification.create({
             action,
             dateNotification,
             person,
@@ -8,7 +12,7 @@ const notificationService = {
         return await notification.save();
     },
     async getNotificationById(notificationId) {
-        const notification = await Notification.findById(notificationId).select("-password");
+        const notification = await Notification.findById(notificationId);
         if (!notification) {
             res.status(404).json({ message: "Notification Not Found" });
         }
