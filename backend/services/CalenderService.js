@@ -12,7 +12,7 @@ const calenderService = {
          return await calender.save();
      },
      async getCalenderById(calenderId) {
-         const calender = await Calender.findById(calenderId).select("-password");
+         const calender = await Calender.findById(calenderId);
          if (!calender) {
              res.status(404).json({ message: "Calender Not Found" });
          }

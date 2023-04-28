@@ -1,8 +1,9 @@
 class CalenderClass{
-    constructor( availability, hour, date){
+    constructor( availability, hour, date,doctor){
         this.availability=availability;
         this.hour=hour;
         this.date=new Date(date);
+        this.doctor=doctor;
 
     }
 
@@ -30,6 +31,15 @@ class CalenderClass{
         this.hour = hour;
     }
 
+    getDoctor()
+    {
+        return this.doctor;
+    }
+
+    setDoctor(doctor)
+    {
+        this.doctor = doctor;
+    }
     toObject(){
         return {
             availability : this.availability,
