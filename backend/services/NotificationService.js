@@ -13,9 +13,11 @@ const notificationService = {
     return await notification.save();
   },
   async getNotificationById(notificationId) {
-    const notification = await Notification.findById(notificationId);
+    const notification = await Notification.findById(notificationId).populate(
+      "person"
+    );
     if (!notification) {
-      res.status(404).json({ message: "Notification Not Found" });
+      throw new Error("Notification not found");
     }
     return notification;
   },
@@ -44,7 +46,7 @@ const notificationService = {
       throw new Error("Notification not found");
     }
     await Notification.findByIdAndDelete(notificationId);
-    return Notification.toObject();
+    return notification.toObject();
   },
 };
 
