@@ -1,23 +1,80 @@
-
 import express from "express";
 import asyncHandler from "express-async-handler";
-import Calender from "../models/Calender.js";
+import Calender from "../entities/Calender.js";
+import calenderService from "../services/CalenderService.js";
 
 const calenderControl = express.Router();
 
 calenderControl.post(
   "/addCalender",
   asyncHandler(async (req, res) => {
-    const { availability, hour, date } = req.body;
-    
-    const calender = new Calender({
-        availability,
-        hour,
-        date,
-     
-    });
-    const createdCalender = await calender.save();
-    res.status(201).json(createdCalender);
+    const { availability, hour, date, doctor } = req.body;
+    try {
+      const calender = new Calender(availability, hour, date, doctor);
+      const createdCalender = await calenderService.createCalender(
+        calender.toObject()
+      );
+      if (createdCalender) {
+        res.status(201).json({
+          _id: createdCalender._id,
+          availability: createdCalender.availability,
+          hour: createdCalender.hour,
+          date: createdCalender.date,
+          doctor: createdCalender.doctor,
+          msg: "Calender Created Successfully!",
+        });
+      } else {
+        res
+          .status(401)
+          .json({ msg: "Something Went Wrong Invalid Calender Data!" });
+      }
+    } catch (error) {
+      res.status(401).json({ msg: error });
+    }
+  })
+);
+
+calenderControl.get(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const calender = await calenderService.getCalenderById(req.params.id);
+    if (calender) {
+      res.json(calender);
+    } else {
+      res.status(404).json({ message: "Calender Not Found" });
+    }
+  })
+);
+
+calenderControl.put(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const calender = await calenderService.getCalenderById(req.params.id);
+    if (calender) {
+      const updateData = req.body;
+      const updatedCalender = await calenderService.updateCalender(
+        req.params.id,
+        updateData
+      );
+      res.json({ updatedCalender, message: "Calender Updated " });
+    } else {
+      res.status(404).json({ message: "Calender Not Found" });
+    }
+  })
+);
+
+calenderControl.delete(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const calender = await calenderService.getCalenderById(req.params.id);
+    if (calender) {
+      const deletedCalender = await calenderService.deletedCalender(
+        req.params.id
+      );
+      res.json({ deletedCalender, message: "Calender Deleted" });
+    } else {
+      res.status(404).json({ message: "Calender Not Found" });
+    }
   })
 );
 
