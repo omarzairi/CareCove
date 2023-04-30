@@ -1,6 +1,19 @@
+import PersonClass from "./Person.js";
 
-class PatientClass extends Person {
-  constructor(firstName, lastName, birthDate, gender, role, email, password, allergies, bloodType, height, weight) {
+class PatientClass extends PersonClass {
+  constructor(
+    firstName,
+    lastName,
+    birthDate,
+    gender,
+    role,
+    email,
+    password,
+    allergies,
+    bloodType,
+    height,
+    weight
+  ) {
     super(firstName, lastName, birthDate, gender, role, email, password);
     this.allergies = allergies;
     this.bloodType = bloodType;
@@ -8,15 +21,31 @@ class PatientClass extends Person {
     this.weight = weight;
   }
 
-  getAllergies() { return this.allergies; }
-  getBloodType() { return this.bloodType; }
-  getHeight() { return this.height; }
-  getWeight() { return this.weight; }
+  getAllergies() {
+    return this.allergies;
+  }
+  getBloodType() {
+    return this.bloodType;
+  }
+  getHeight() {
+    return this.height;
+  }
+  getWeight() {
+    return this.weight;
+  }
 
-  setAllergies(allergies) { this.allergies = allergies; }
-  setBloodType(bloodType) { this.bloodType = bloodType; }
-  setHeight(height) { this.height = height; }
-  setWeight(weight) { this.weight = weight; }
+  setAllergies(allergies) {
+    this.allergies = allergies;
+  }
+  setBloodType(bloodType) {
+    this.bloodType = bloodType;
+  }
+  setHeight(height) {
+    this.height = height;
+  }
+  setWeight(weight) {
+    this.weight = weight;
+  }
 
   toObject() {
     return {

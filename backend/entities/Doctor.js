@@ -1,4 +1,6 @@
-class DoctorClass extends Person{
+import PersonClass from "./Person.js";
+
+class DoctorClass extends PersonClass{
     constructor(firstName, lastName, birthDate, gender,role, email, password,location,rating){
         super(firstName, lastName, birthDate, gender,role, email, password);
         this.location = location;

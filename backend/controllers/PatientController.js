@@ -2,15 +2,36 @@ import express from "express";
 import asyncHandler from "express-async-handler";
 import PatientClass from "../entities/Patient.js";
 import patientService from "../services/PatientService.js";
+import Person from "../models/Person.js";
 
 const patientControl = express.Router();
 
 patientControl.post(
-  "/register/patient",
+  "/register",
   asyncHandler(async (req, res) => {
     const { person, allergies, bloodType, height, weight } = req.body;
-    const patient = new PatientClass(person, allergies, bloodType, height, weight);
-    const createdPatient = await patientService.createPatient(patient.toObject());
+    const perr = await Person.findById(person);
+    const patient = new PatientClass(
+      perr.firstName,
+      perr.lastName,
+      perr.birthDate,
+      perr.gender,
+      perr.role,
+      perr.email,
+      perr.password,
+      allergies,
+      bloodType,
+      height,
+      weight
+    );
+    console.log(patient);
+    const createdPatient = await patientService.createPatient({
+      person: perr._id,
+      allergies: patient.allergies,
+      bloodType: patient.bloodType,
+      height: patient.height,
+      weight: patient.weight,
+    });
     if (createdPatient) {
       res.status(201).json({
         _id: createdPatient._id,
@@ -28,7 +49,7 @@ patientControl.post(
 );
 
 patientControl.get(
-  "/patients",
+  "/",
   asyncHandler(async (req, res) => {
     const patients = await patientService.getAllPatients();
     res.json(patients);
@@ -36,7 +57,7 @@ patientControl.get(
 );
 
 patientControl.get(
-  "/patient/:id",
+  "/:id",
   asyncHandler(async (req, res) => {
     const patient = await patientService.getPatientById(req.params.id);
     if (patient) {
@@ -48,7 +69,7 @@ patientControl.get(
 );
 
 patientControl.put(
-  "/patient/:id",
+  "/:id",
   asyncHandler(async (req, res) => {
     const patient = await patientService.getPatientById(req.params.id);
     if (patient) {
@@ -65,7 +86,7 @@ patientControl.put(
 );
 
 patientControl.delete(
-  "/patient/:id",
+  "/:id",
   asyncHandler(async (req, res) => {
     const patient = await patientService.getPatientById(req.params.id);
     if (patient) {

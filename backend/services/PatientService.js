@@ -20,7 +20,7 @@ const patientService = {
     return patient;
   },
   async getAllPatients() {
-    const patients = await this.find();
+    const patients = await Patient.find().populate("person");
     return patients.map((patient) => patient.toObject());
   },
   async updatePatient(patientId, updateData) {
