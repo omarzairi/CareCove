@@ -21,10 +21,7 @@ app.get("/public", (req, res) => {
 app.use("/api/person", personControl);
 app.use("/api/notification", notificationControl);
 app.use("/api/calender", calenderControl);
-<<<<<<< HEAD
 app.use("/api/comment",commentControl);
-app.use("/api/doctor",doctorControl)
-=======
+app.use("/api/doctor",doctorControl);
 app.use("/api/patient", patientControl);
->>>>>>> 0c0a8f945fe7e55beda2368c6b01bbe689672cc4
 app.listen(5000, console.log("app running...."));

@@ -1,9 +1,9 @@
 import Doctor from "../models/Doctor.js";
 import Person from "../models/Person.js";
 const doctorService = {
-    async createDoctor ({person,location,rating}) 
+    async createDoctor ({person,location,rating,specialty}) 
     {
-        const doctor = await Doctor.create({person,location,rating});
+        const doctor = await Doctor.create({person,location,rating,specialty});
         return await doctor.save();
     },
     async getDoctorById(doctorId) 
@@ -16,16 +16,19 @@ const doctorService = {
     },
     async getAllDoctors()
     {
-        const doctors = await this.find();
+        const doctors = await Doctor.find();
         return doctors.map((doctor) => doctor.toObject());
     },
-    async updateDoctor(doctorId)
+    async updateDoctor(doctorId,updateData)
     {
         const doctor = await Doctor.findById(doctorId).populate("person");
-        if (!doctor){ throw new Error('Doctor not found');}
+        if (!doctor){ 
+            throw new Error('Doctor not found');
+        }
         doctor.person = updateData.person || doctor.person;
         doctor.location = updateData.doctor ||doctor.location;
         doctor.rating = updateData.rating ||  doctor.rating;
+        doctor.specialty = updateData.specialty || doctor.specialty;
         const updatedDoctor = await doctor.save();
         return updatedDoctor.toObject();
     },

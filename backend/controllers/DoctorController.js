@@ -2,20 +2,44 @@ import express from "express";
 import asyncHandler from "express-async-handler";
 import DoctorClass from "../entities/Doctor.js";
 import doctorService from "../services/DoctorService.js";
-
+import Doctor from "../models/Doctor.js";
+import Person from "../models/Person.js";
 const doctorControl = express.Router();
  doctorControl.post(
-    "/register/doctor",
-    asyncHandler(async(doc) => 
+    "/register",
+    asyncHandler(async(req,res) => 
     {
-        const doctor = new DoctorClass(firstName, lastName, birthDate, gender,role, email, password,location,rating);
-        const createdDoctor = await doctorService.createDoctor(doctor.toObject());
+        const { person, rating, location, specialty } = req.body;
+        const docc = await Person.findById(person);
+        const doctor = new DoctorClass(
+            docc.firstName, 
+            docc.lastName, 
+            docc.birthDate, 
+            docc.gender,
+            docc.role, 
+            docc.email, 
+            docc.password,
+            docc._id,
+            location,
+            rating,
+            specialty
+            );
+            console.log(doctor);
+        const createdDoctor = await doctorService.createDoctor(
+            {
+                person:docc._id,
+                location:doctor.location,
+                rating:doctor.rating,
+                specialty:doctor.specialty
+            }
+        );
         if (createdDoctor){
-            doc.statusCode(201).json({
+            res.status(201).json({
                 _id:createdDoctor._id,
                 person:createdDoctor.person,
                 location:createdDoctor.location,
                 rating:createdDoctor.rating,
+                specialty:createdDoctor.specialty,
                 msg: " Doctor created successfully",
             });
         }
@@ -25,15 +49,25 @@ const doctorControl = express.Router();
 
  );
  doctorControl.get(
-    "doctor/",
+    "/",
     asyncHandler(async (req, res) => {
-      const doctors = await doctorService.getAllDoctors();
-      res.json(doctors);
+        try
+        {
+            const doctors = await doctorService.getAllDoctors();
+            res.json(doctors);
+        }
+        catch(err)
+        {
+            res.send(404).json({message:"not found"})
+        }
+
+      
     })
   );
  doctorControl.get(
-    "/doctor/",
-    asyncHandler(async (req, res) => {
+    "/:id",
+    asyncHandler(async (req, res) => 
+    {
         const doctor = await doctorService.getDoctorById(req.params.id);
         if (doctor) {
             res.json(doctor);
@@ -44,12 +78,14 @@ const doctorControl = express.Router();
     }
     ));
     doctorControl.put(
-        "/doctor/",
+        "/:id",
         asyncHandler(async (req, res) => {
             const doctor = await doctorService.getDoctorById(req.params.id);
             if (doctor) {
                 const updateData = req.body;
-                const updatedDoctor = await doctorService.updateDoctor(req.params.id, updateData);
+                const updatedDoctor = await doctorService.updateDoctor(
+                    req.params.id, 
+                    updateData);
                 res.json({updatedDoctor, message: "Doctor Updated "} );
             } else {
                 res.status(404).json({ message: "Doctor Not Found" });
@@ -58,11 +94,11 @@ const doctorControl = express.Router();
     )
     );
     doctorControl.delete(
-        "/doctor/",
+        "/:id",
         asyncHandler(async (req, res) => {
             const doctor = await doctorService.getDoctorById(req.params.id);
             if (doctor) {
-                const deletedDoctor = await doctorService.updateDoctor(req.params.id);
+                const deletedDoctor = await doctorService.deleteDoctor(req.params.id);
                 res.json({deletedDoctor, message: "Doctor Deleted" });
             } else {
                 res.status(404).json({ message: "Doctor Not Found" });

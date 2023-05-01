@@ -8,6 +8,7 @@ const DoctorSchema = new mongoose.Schema({
     },
     location: { type: String, required: true },
     rating: { type: Number, required: true , default:null },
+    specialty:{type : String, required : true}
   });
 
   const Doctor = mongoose.model("Doctor", DoctorSchema);
