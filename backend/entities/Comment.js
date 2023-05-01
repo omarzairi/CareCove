@@ -1,9 +1,10 @@
 class CommentClass{
-    constructor(text,rating,date,patient) {
+    constructor(text,rating,date,patient,doctor) {
         this.text=text;
         this.rating=rating;
         this.date=new Date(date);
         this.patient=patient;
+        this.doctor=doctor;
     }
 
     getText()
@@ -19,6 +20,11 @@ class CommentClass{
     getDate()
     {
         return this.date;
+    }
+
+    getDoctor()
+    {
+        return this.doctor;    
     }
 
     getPatient()
@@ -41,6 +47,11 @@ class CommentClass{
         this.date=date;
     }
 
+    setDoctor(doctor)
+    {
+        this.doctor=doctor;
+    }
+
     setPatient(patient)
     {
         this.patient=patient;
@@ -52,6 +63,7 @@ class CommentClass{
             text: this.text,
             rating: this.rating,
             date: this.date,
+            doctor : this.doctor,
             patient : this.patient
         }
     }

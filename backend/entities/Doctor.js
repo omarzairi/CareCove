@@ -1,13 +1,11 @@
+import Person from "./Person.js";
 class DoctorClass extends Person{
-    constructor(firstName, lastName, birthDate, gender,role, email, password,location,rating){
+    constructor(firstName, lastName, birthDate, gender,role, email, password,location,rating,person)
+    {
         super(firstName, lastName, birthDate, gender,role, email, password);
         this.location = location;
         this.rating = rating;
-    }
-    constructor(person,location,rating){
         this.person=person;
-        this.location=location;
-        this.rating=rating;
     }
     getPerson() { return this.person; }
     getLocation() { return this.location;}

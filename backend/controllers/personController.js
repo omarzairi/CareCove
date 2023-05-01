@@ -108,7 +108,6 @@ personControl.put(
 
 personControl.delete(
   "/",
-  protectPerson,
   asyncHandler(async (req, res) => {
     try {
       const person = await personService.getPersonById(req.person._id);

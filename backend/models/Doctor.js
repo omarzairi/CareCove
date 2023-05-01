@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Person from "./Person.js";
 const DoctorSchema = new mongoose.Schema({
     person : {
         type : mongoose.Schema.Types.ObjectId,

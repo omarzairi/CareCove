@@ -6,7 +6,8 @@ import doctorService from "../services/DoctorService.js";
 const doctorControl = express.Router();
  doctorControl.post(
     "/register/doctor",
-    asyncHandler(async(doc) => {
+    asyncHandler(async(doc) => 
+    {
         const doctor = new DoctorClass(firstName, lastName, birthDate, gender,role, email, password,location,rating);
         const createdDoctor = await doctorService.createDoctor(doctor.toObject());
         if (createdDoctor){
