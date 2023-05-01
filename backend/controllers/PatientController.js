@@ -3,6 +3,8 @@ import asyncHandler from "express-async-handler";
 import PatientClass from "../entities/Patient.js";
 import patientService from "../services/PatientService.js";
 import Person from "../models/Person.js";
+import personService from "../services/PersonService.js";
+import generateToken from "../utils/generateToken.js";
 
 const patientControl = express.Router();
 
@@ -44,6 +46,30 @@ patientControl.post(
       });
     } else {
       throw new Error("Something Went Wrong Invalid User Data!");
+    }
+  })
+);
+patientControl.post(
+  "/login",
+  asyncHandler(async (req, res) => {
+    const email = req.body.email.toLowerCase();
+    const password = req.body.password;
+    const patient = await Person.findOne({ email: email });
+    console.log(patient.firstName);
+    if (patient && password == patient.password && patient.role == "patient") {
+      res.status(201).json({
+        _id: patient._id,
+        firstName: patient.firstName,
+        lastName: patient.lastName,
+        birthDate: patient.birthDate,
+        gender: patient.gender,
+        role: patient.role,
+        email: patient.email,
+        msg: "Patient Logged In Successfully!",
+        token: generateToken(patient._id, patient.firstName, patient.role),
+      });
+    } else {
+      res.status(401).json({ msg: "Invalid Email or Password!" });
     }
   })
 );

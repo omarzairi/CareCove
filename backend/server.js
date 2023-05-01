@@ -24,4 +24,6 @@ app.use("/api/calender", calenderControl);
 app.use("/api/comment",commentControl);
 app.use("/api/doctor",doctorControl);
 app.use("/api/patient", patientControl);
+
+
 app.listen(5000, console.log("app running...."));
