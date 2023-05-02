@@ -43,6 +43,7 @@ patientControl.post(
         height: createdPatient.height,
         weight: createdPatient.weight,
         msg: "Patient created successfully",
+        token: generateToken(patient._id, patient.firstName, patient.role),
       });
     } else {
       throw new Error("Something Went Wrong Invalid User Data!");
