@@ -8,7 +8,7 @@ const doctorService = {
     },
     async getDoctorById(doctorId) 
     {
-        const doctor = await Doctor.findById(doctorId);
+        const doctor = await Doctor.findById(doctorId).populate("person");
         if (!doctor) {
             throw new Error('Doctor not found');
         }
@@ -16,7 +16,7 @@ const doctorService = {
     },
     async getAllDoctors()
     {
-        const doctors = await Doctor.find();
+        const doctors = await Doctor.find().populate("person")
         return doctors.map((doctor) => doctor.toObject());
     },
     async updateDoctor(doctorId,updateData)
