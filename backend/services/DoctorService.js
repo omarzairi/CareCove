@@ -43,5 +43,17 @@ const doctorService = {
         await Doctor.findByIdAndDelete(doctorId);
         return doctor.toObject();
     },
+    async getDoctorBySpeciality(speciality)
+    {
+        const doctors = await Doctor.find({specialty:speciality}).populate("person")
+        return doctors.map((doctor) => doctor.toObject());
+    },
+    async getDoctorByName(firstName)
+    {
+        const doctors = await Doctor.find()
+        .populate({ path: 'person', match: { firstName } })
+        .exec()
+      return doctors.filter(doctor => doctor.person !== null).map(doctor => doctor.toObject());
+    },
 };
 export default doctorService;

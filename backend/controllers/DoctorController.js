@@ -108,4 +108,38 @@ const doctorControl = express.Router();
         }
     )
     );
+
+    doctorControl.get(
+        "/getBySpeciality/:specialty",
+        asyncHandler(async (req, res) => 
+        {
+            try {
+            const doctor = await doctorService.getDoctorBySpeciality(req.params.specialty);
+            
+                res.json(doctor);
+            }
+            
+                catch(err)
+        {
+            res.send(404).json({message:"not found"})
+        }
+    
+        }
+        ));
+
+    doctorControl.get(
+        "/getByName/:firstName",
+        asyncHandler(async (req, res) =>
+        {
+            try{
+            const doctors= await doctorService.getDoctorByName(req.params.firstName);
+            res.json(doctors);
+            }
+            catch(err)
+            {
+                res.send(404).json({message:"not found"})      }
+            }
+        ));
+
+
     export default doctorControl;
