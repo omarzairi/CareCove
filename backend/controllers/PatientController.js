@@ -125,4 +125,32 @@ patientControl.delete(
   })
 );
 
+patientControl.get(
+  "/getByFirstName/:firstName",
+  asyncHandler(async (req, res) =>
+  {
+      try{
+      const patients= await patientService.getPatientByFirstName(req.params.firstName);
+      res.json(patients);
+      }
+      catch(err)
+      {
+          res.send(404).json({message:"not found"})      }
+      }
+  ));
+
+  patientControl.get(
+    "/getByLastName/:lastName",
+    asyncHandler(async (req, res) =>
+    {
+        try{
+        const patients= await patientService.getPatientByLastName(req.params.lastName);
+        res.json(patients);
+        }
+        catch(err)
+        {
+            res.send(404).json({message:"not found"})      }
+        }
+    ));
+
 export default patientControl;

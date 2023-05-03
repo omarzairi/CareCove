@@ -48,10 +48,18 @@ const doctorService = {
         const doctors = await Doctor.find({specialty:speciality}).populate("person")
         return doctors.map((doctor) => doctor.toObject());
     },
-    async getDoctorByName(firstName)
+    async getDoctorByFirstName(firstName)
     {
         const doctors = await Doctor.find()
         .populate({ path: 'person', match: { firstName } })
+        .exec()
+      return doctors.filter(doctor => doctor.person !== null).map(doctor => doctor.toObject());
+    },
+
+    async getDoctorByLastName(lastName)
+    {
+        const doctors = await Doctor.find()
+        .populate({ path: 'person', match: { lastName } })
         .exec()
       return doctors.filter(doctor => doctor.person !== null).map(doctor => doctor.toObject());
     },

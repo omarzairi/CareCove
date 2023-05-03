@@ -128,11 +128,11 @@ const doctorControl = express.Router();
         ));
 
     doctorControl.get(
-        "/getByName/:firstName",
+        "/getByFirstName/:firstName",
         asyncHandler(async (req, res) =>
         {
             try{
-            const doctors= await doctorService.getDoctorByName(req.params.firstName);
+            const doctors= await doctorService.getDoctorByFirstName(req.params.firstName);
             res.json(doctors);
             }
             catch(err)
@@ -140,6 +140,20 @@ const doctorControl = express.Router();
                 res.send(404).json({message:"not found"})      }
             }
         ));
+
+        doctorControl.get(
+            "/getByLastName/:lastName",
+            asyncHandler(async (req, res) =>
+            {
+                try{
+                const doctors= await doctorService.getDoctorByLastName(req.params.lastName);
+                res.json(doctors);
+                }
+                catch(err)
+                {
+                    res.send(404).json({message:"not found"})      }
+                }
+            ));
 
 
     export default doctorControl;

@@ -45,6 +45,21 @@ const patientService = {
     await Patient.findByIdAndDelete(patientId);
     return patient.toObject();
   },
+  async getPatientByFirstName(firstName)
+    {
+        const patients = await Patient.find()
+        .populate({ path: 'person', match: { firstName } })
+        .exec()
+      return patients.filter(patient => patient.person !== null).map(patient => patient.toObject());
+    },
+
+    async getPatientByLastName(lastName)
+    {
+        const patients = await Patient.find()
+        .populate({ path: 'person', match: { lastName } })
+        .exec()
+      return patients.filter(patient => patient.person !== null).map(patient => patient.toObject());
+    },
 };
 
 export default patientService;
