@@ -13,7 +13,7 @@ const patientService = {
     return await patient.save();
   },
   async getPatientById(patientId) {
-    const patient = await Patient.findById(patientId);
+    const patient = await Patient.findById(patientId).populate("person");
     if (!patient) {
       throw new Error("Patient not found");
     }
@@ -45,21 +45,23 @@ const patientService = {
     await Patient.findByIdAndDelete(patientId);
     return patient.toObject();
   },
-  async getPatientByFirstName(firstName)
-    {
-        const patients = await Patient.find()
-        .populate({ path: 'person', match: { firstName } })
-        .exec()
-      return patients.filter(patient => patient.person !== null).map(patient => patient.toObject());
-    },
+  async getPatientByFirstName(firstName) {
+    const patients = await Patient.find()
+      .populate({ path: "person", match: { firstName } })
+      .exec();
+    return patients
+      .filter((patient) => patient.person !== null)
+      .map((patient) => patient.toObject());
+  },
 
-    async getPatientByLastName(lastName)
-    {
-        const patients = await Patient.find()
-        .populate({ path: 'person', match: { lastName } })
-        .exec()
-      return patients.filter(patient => patient.person !== null).map(patient => patient.toObject());
-    },
+  async getPatientByLastName(lastName) {
+    const patients = await Patient.find()
+      .populate({ path: "person", match: { lastName } })
+      .exec();
+    return patients
+      .filter((patient) => patient.person !== null)
+      .map((patient) => patient.toObject());
+  },
 };
 
 export default patientService;

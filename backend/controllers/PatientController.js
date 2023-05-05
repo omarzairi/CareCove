@@ -5,6 +5,7 @@ import patientService from "../services/PatientService.js";
 import Person from "../models/Person.js";
 import personService from "../services/PersonService.js";
 import generateToken from "../utils/generateToken.js";
+import Patient from "../models/Patient.js";
 
 const patientControl = express.Router();
 
@@ -55,19 +56,24 @@ patientControl.post(
   asyncHandler(async (req, res) => {
     const email = req.body.email.toLowerCase();
     const password = req.body.password;
-    const patient = await Person.findOne({ email: email });
-    console.log(patient.firstName);
-    if (patient && password == patient.password && patient.role == "patient") {
+    const person = await Person.findOne({ email: email });
+    const patient = await Patient.findOne({ person: person._id });
+    if (
+      person &&
+      password == person.password &&
+      person.role == "patient" &&
+      patient
+    ) {
       res.status(201).json({
-        _id: patient._id,
-        firstName: patient.firstName,
-        lastName: patient.lastName,
-        birthDate: patient.birthDate,
-        gender: patient.gender,
-        role: patient.role,
-        email: patient.email,
+        _id: person._id,
+        firstName: person.firstName,
+        lastName: person.lastName,
+        birthDate: person.birthDate,
+        gender: person.gender,
+        role: person.role,
+        email: person.email,
         msg: "Patient Logged In Successfully!",
-        token: generateToken(patient._id, patient.firstName, patient.role),
+        token: generateToken(patient._id, person.firstName, person.role),
       });
     } else {
       res.status(401).json({ msg: "Invalid Email or Password!" });
@@ -127,30 +133,30 @@ patientControl.delete(
 
 patientControl.get(
   "/getByFirstName/:firstName",
-  asyncHandler(async (req, res) =>
-  {
-      try{
-      const patients= await patientService.getPatientByFirstName(req.params.firstName);
+  asyncHandler(async (req, res) => {
+    try {
+      const patients = await patientService.getPatientByFirstName(
+        req.params.firstName
+      );
       res.json(patients);
-      }
-      catch(err)
-      {
-          res.send(404).json({message:"not found"})      }
-      }
-  ));
+    } catch (err) {
+      res.send(404).json({ message: "not found" });
+    }
+  })
+);
 
-  patientControl.get(
-    "/getByLastName/:lastName",
-    asyncHandler(async (req, res) =>
-    {
-        try{
-        const patients= await patientService.getPatientByLastName(req.params.lastName);
-        res.json(patients);
-        }
-        catch(err)
-        {
-            res.send(404).json({message:"not found"})      }
-        }
-    ));
+patientControl.get(
+  "/getByLastName/:lastName",
+  asyncHandler(async (req, res) => {
+    try {
+      const patients = await patientService.getPatientByLastName(
+        req.params.lastName
+      );
+      res.json(patients);
+    } catch (err) {
+      res.send(404).json({ message: "not found" });
+    }
+  })
+);
 
 export default patientControl;

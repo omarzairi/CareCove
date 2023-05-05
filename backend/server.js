@@ -8,6 +8,7 @@ import calenderControl from "./controllers/calenderController.js";
 import commentControl from "./controllers/commentController.js";
 import doctorControl from "./controllers/DoctorController.js";
 import RendezVousControl from "./controllers/Rendez-vous.js";
+import messageControl from "./controllers/messageController.js";
 
 const app = express();
 app.use(cors());
@@ -22,10 +23,10 @@ app.get("/public", (req, res) => {
 app.use("/api/person", personControl);
 app.use("/api/notification", notificationControl);
 app.use("/api/calender", calenderControl);
-app.use("/api/comment",commentControl);
-app.use("/api/doctor",doctorControl);
+app.use("/api/comment", commentControl);
+app.use("/api/doctor", doctorControl);
 app.use("/api/patient", patientControl);
 app.use("/api/RendezVous", RendezVousControl);
-
+app.use("/api/message", messageControl);
 
 app.listen(5000, console.log("app running...."));
