@@ -9,6 +9,7 @@ const PatientSchema = new mongoose.Schema({
     bloodType: { type: String , required: true },
     height: { type: Number , required: true },
     weight: { type: Number , required: true },
+    amount: { type: Number , required: true },
   });
 
   const Patient = mongoose.model("Patient", PatientSchema);

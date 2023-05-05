@@ -3,7 +3,7 @@ import Person from "../models/Person.js";
 const doctorService = {
     async createDoctor ({person,location,rating,specialty}) 
     {
-        const doctor = await Doctor.create({person,location,rating,specialty});
+        const doctor = await Doctor.create({person,location,rating,specialty,price});
         return await doctor.save();
     },
     async getDoctorById(doctorId) 
@@ -29,6 +29,8 @@ const doctorService = {
         doctor.location = updateData.doctor ||doctor.location;
         doctor.rating = updateData.rating ||  doctor.rating;
         doctor.specialty = updateData.specialty || doctor.specialty;
+        doctor.price = updateData.price || doctor.price;
+
         const updatedDoctor = await doctor.save();
         return updatedDoctor.toObject();
     },

@@ -1,11 +1,11 @@
 class PersonClass {
-  constructor(firstName, lastName, birthDate, gender,role, email, password) {
+  constructor(firstName, lastName, birthDate,image, gender,role, email, password) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.birthDate = new Date(birthDate);
     this.role = role;
     this.gender=gender;
-
+    this.image=image;
     this.email = email;
     this.password = password;
   }
@@ -57,6 +57,15 @@ class PersonClass {
   setPassword(password) {
     this.password = password;
   }
+
+  getImage()
+  {
+    return this.image;
+  }
+  setImage(image)
+  {
+    this.image=image;
+  }
   toObject() {
     return {
       firstName: this.firstName,
@@ -66,6 +75,7 @@ class PersonClass {
       role: this.role,
       email: this.email,
       password: this.password,
+      image:this.image,
     };
   }
 }

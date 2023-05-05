@@ -22,7 +22,7 @@ personControl.post(
   "/register",
   asyncHandler(async (req, res) => {
     req.body.email = req.body.email.toLowerCase();
-    const { firstName, lastName, birthDate, gender, role, email, password } =
+    const { firstName, lastName, birthDate,image, gender, role, email, password } =
       req.body;
     const exist = await Person.findOne({ email });
     if (exist) {
@@ -32,6 +32,7 @@ personControl.post(
         firstName,
         lastName,
         birthDate,
+        image,
         gender,
         role,
         email,
@@ -44,6 +45,7 @@ personControl.post(
           firstName: createdPerson.firstName,
           lastName: createdPerson.lastName,
           birthDate: createdPerson.birthDate,
+          image: createdPerson.image,
           gender: createdPerson.gender,
           role: createdPerson.role,
           email: createdPerson.email,

@@ -12,12 +12,13 @@ const patientControl = express.Router();
 patientControl.post(
   "/register",
   asyncHandler(async (req, res) => {
-    const { person, allergies, bloodType, height, weight } = req.body;
+    const { person, allergies, bloodType, height, weight,amount } = req.body;
     const perr = await Person.findById(person);
     const patient = new PatientClass(
       perr.firstName,
       perr.lastName,
       perr.birthDate,
+      perr.image,
       perr.gender,
       perr.role,
       perr.email,
@@ -25,7 +26,8 @@ patientControl.post(
       allergies,
       bloodType,
       height,
-      weight
+      weight,
+      amount,
     );
     console.log(patient);
     const createdPatient = await patientService.createPatient({
@@ -34,6 +36,7 @@ patientControl.post(
       bloodType: patient.bloodType,
       height: patient.height,
       weight: patient.weight,
+      amount:patient.amount,
     });
     if (createdPatient) {
       res.status(201).json({
@@ -43,6 +46,7 @@ patientControl.post(
         bloodType: createdPatient.bloodType,
         height: createdPatient.height,
         weight: createdPatient.weight,
+        amount:createdPatient.amount,
         msg: "Patient created successfully",
         token: generateToken(patient._id, patient.firstName, patient.role),
       });
@@ -69,6 +73,7 @@ patientControl.post(
         firstName: person.firstName,
         lastName: person.lastName,
         birthDate: person.birthDate,
+        image:person.image,
         gender: person.gender,
         role: person.role,
         email: person.email,

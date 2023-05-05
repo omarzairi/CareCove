@@ -2,13 +2,14 @@ import Patient from "../models/Patient.js";
 import Person from "../models/Person.js";
 
 const patientService = {
-  async createPatient({ person, allergies, bloodType, height, weight }) {
+  async createPatient({ person, allergies, bloodType, height, weight,amount }) {
     const patient = await Patient.create({
       person,
       allergies,
       bloodType,
       height,
       weight,
+      amount,
     });
     return await patient.save();
   },
@@ -33,6 +34,8 @@ const patientService = {
     patient.bloodType = updateData.bloodType || patient.bloodType;
     patient.height = updateData.height || patient.height;
     patient.weight = updateData.weight || patient.weight;
+    patient.amount = updateData.amount || patient.amount;
+
     const updatedPatient = await patient.save();
     return updatedPatient.toObject();
   },

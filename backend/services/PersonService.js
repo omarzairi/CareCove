@@ -19,6 +19,7 @@ const personService = {
       firstName,
       lastName,
       birthDate,
+      image,
       gender,
       role,
       email,
@@ -47,6 +48,8 @@ const personService = {
     person.firstName = updateData.firstName || person.firstName;
     person.lastName = updateData.lastName || person.lastName;
     person.birthDate = updateData.birthDate || person.birthDate;
+    person.image = updateData.image || person.image;
+
     person.gender = updateData.gender || person.gender;
     person.role = updateData.role || person.role;
     person.email = updateData.email || person.email;
