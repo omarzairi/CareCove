@@ -1,7 +1,7 @@
 import PersonClass from "./Person.js";
 
 class DoctorClass extends PersonClass{
-    constructor(firstName, lastName, birthDate,image, gender,role, email, password,person,location,rating,specialty,price)
+    constructor(firstName, lastName, birthDate,image, gender,role, email, password,person,location,rating,specialty,price,description)
     {
         super(firstName, lastName, birthDate,image, gender,role, email, password);
         this.location = location;
@@ -9,8 +9,10 @@ class DoctorClass extends PersonClass{
         this.person=person;
         this.specialty=specialty;
         this.price=price;
+        this.description=description;
     }
     getPerson() { return this.person; }
+    getDescription(){return this.description;}
     getLocation() { return this.location;}
     getRating() { return this.rating; } 
     getSpecialty(){return this.specialty}
@@ -20,7 +22,8 @@ class DoctorClass extends PersonClass{
     setLocation(location) { this.location = location;}
     setSpecialty(specialty){ this.specialty=specialty;}
     setPrice(price){this.price=price}
-    toObject() { return {person : this.person, location : this.location ,rating :this.rating,specialty:this.specialty,price:this.price};}
+    setDescription(description){this.description=description;}
+    toObject() { return {person : this.person, location : this.location ,rating :this.rating,specialty:this.specialty,price:this.price,description:this.description};}
 
 }
 export default DoctorClass;

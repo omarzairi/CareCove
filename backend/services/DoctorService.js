@@ -1,9 +1,9 @@
 import Doctor from "../models/Doctor.js";
 import Person from "../models/Person.js";
 const doctorService = {
-    async createDoctor ({person,location,rating,specialty}) 
+    async createDoctor ({person,location,rating,specialty,price,description}) 
     {
-        const doctor = await Doctor.create({person,location,rating,specialty,price});
+        const doctor = await Doctor.create({person,location,rating,specialty,price,description});
         return await doctor.save();
     },
     async getDoctorById(doctorId) 
@@ -30,6 +30,7 @@ const doctorService = {
         doctor.rating = updateData.rating ||  doctor.rating;
         doctor.specialty = updateData.specialty || doctor.specialty;
         doctor.price = updateData.price || doctor.price;
+        doctor.description=updateData.description || doctor.description;
 
         const updatedDoctor = await doctor.save();
         return updatedDoctor.toObject();

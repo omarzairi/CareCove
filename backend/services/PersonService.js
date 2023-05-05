@@ -10,6 +10,7 @@ const personService = {
     firstName,
     lastName,
     birthDate,
+    image,
     role,
     gender,
     email,

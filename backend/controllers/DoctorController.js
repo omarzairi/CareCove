@@ -9,7 +9,7 @@ const doctorControl = express.Router();
     "/register",
     asyncHandler(async(req,res) => 
     {
-        const { person, rating, location, specialty ,price} = req.body;
+        const { person, rating, location, specialty ,price,description} = req.body;
         const docc = await Person.findById(person);
         const doctor = new DoctorClass(
             docc.firstName, 
@@ -23,7 +23,9 @@ const doctorControl = express.Router();
             docc._id,
             location,
             rating,
-            specialty
+            specialty,
+            price,
+            description,
             );
             console.log(doctor);
         const createdDoctor = await doctorService.createDoctor(
@@ -32,7 +34,8 @@ const doctorControl = express.Router();
                 location:doctor.location,
                 rating:doctor.rating,
                 specialty:doctor.specialty,
-                price:doctor.price
+                price:doctor.price,
+                description:doctor.description,
             }
         );
         if (createdDoctor){
@@ -43,6 +46,7 @@ const doctorControl = express.Router();
                 rating:createdDoctor.rating,
                 specialty:createdDoctor.specialty,
                 price:createdDoctor.price,
+                description:createdDoctor.description,
                 msg: " Doctor created successfully",
             });
         }
