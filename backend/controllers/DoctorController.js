@@ -98,7 +98,7 @@ doctorControl.get(
   })
 );
 doctorControl.get(
-  "/",
+  "/:id",
   protectDoctor,
   asyncHandler(async (req, res) => {
     const doctor = await doctorService.getDoctorById(req.doctor._id);

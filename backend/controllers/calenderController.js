@@ -78,4 +78,19 @@ calenderControl.delete(
   })
 );
 
+calenderControl.get(
+  "getByDoctorid/:id",
+  asyncHandler(async (req, res) => {
+    const calenders= await calenderService.getCalenderByIdDoctor(req.params.doctor);
+    if (calenders) {
+      res.json(calenders);
+    } else {
+      res.status(404).json({ message: "Calender Not Found" });
+    }
+  })
+  
+
+    
+);
+
 export default calenderControl;

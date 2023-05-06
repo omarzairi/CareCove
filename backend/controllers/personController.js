@@ -66,7 +66,7 @@ personControl.post(
 );
 
 personControl.get(
-  "/me",
+  "/:id",
   protectPerson,
   asyncHandler(async (req, res) => {
     try {
@@ -85,7 +85,7 @@ personControl.get(
 );
 
 personControl.put(
-  "/",
+  "/:id",
   protectPerson,
   asyncHandler(async (req, res) => {
     try {
@@ -109,7 +109,7 @@ personControl.put(
 );
 
 personControl.delete(
-  "/",
+  "/:id",
   asyncHandler(async (req, res) => {
     try {
       const person = await personService.getPersonById(req.person._id);

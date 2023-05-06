@@ -46,5 +46,12 @@ const calenderService = {
     await Calender.findByIdAndDelete(calenderId);
     return calender.toObject();
   },
+  async getCalenderByDoctorId(doctorId) {
+    const calenders = await Calender.find({ doctor: doctorId });
+    if (!calender) {
+      throw new Error("Calender not found");
+    }
+    return calender.toObject();
+  }
 };
 export default calenderService;
