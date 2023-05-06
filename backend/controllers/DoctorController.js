@@ -99,6 +99,17 @@ doctorControl.get(
 );
 doctorControl.get(
   "/:id",
+  asyncHandler(async (req, res) => {
+    const doctor = await doctorService.getDoctorById(req.params.id);
+    if (doctor) {
+      res.json(doctor);
+    } else {
+      res.status(404).json({ message: "doctor Not Found" });
+    }
+  })
+);
+doctorControl.get(
+  "/",
   protectDoctor,
   asyncHandler(async (req, res) => {
     const doctor = await doctorService.getDoctorById(req.doctor._id);
