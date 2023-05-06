@@ -9,6 +9,7 @@ import commentControl from "./controllers/commentController.js";
 import doctorControl from "./controllers/DoctorController.js";
 import RendezVousControl from "./controllers/Rendez-vous.js";
 import messageControl from "./controllers/messageController.js";
+import consultationControl from "./controllers/ConsultationController.js";
 
 const app = express();
 app.use(cors());
@@ -28,5 +29,6 @@ app.use("/api/doctor", doctorControl);
 app.use("/api/patient", patientControl);
 app.use("/api/RendezVous", RendezVousControl);
 app.use("/api/message", messageControl);
+app.use("/api/consultation", consultationControl);
 
 app.listen(5000, console.log("app running...."));
