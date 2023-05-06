@@ -9,6 +9,8 @@ import protectPatient from "../middleware/patientAuth.js";
 import Patient from "../models/Patient.js";
 import patientService from "../services/PatientService.js";
 import doctorService from "../services/DoctorService.js";
+import protectDoctor from "../middleware/doctorAuth.js";
+import RendezVous from "../models/Rendez-vous.js";
 const RendezVousControl = express.Router();
 
 RendezVousControl.post(
@@ -62,7 +64,7 @@ RendezVousControl.post(
 );
 
 RendezVousControl.get(
-  "/RendezVous",
+  "/",
   asyncHandler(async (req, res) => {
     try {
       const RVs = await RendezVousService.getAllRendezVous();
@@ -86,6 +88,31 @@ RendezVousControl.delete(
         res.json({ Rv, message: "Comment Deleted" });
       } else {
         res.status(404).json({ message: "Not Found" });
+      }
+    } catch (err) {
+      res.status(404).json({ message: err.message });
+    }
+  })
+);
+RendezVousControl.get(
+  "/doctor/getMyRVThisMonth",
+  protectDoctor,
+  asyncHandler(async (req, res) => {
+    try {
+      //get my upcoming appointments during this month only
+      const rv = await RendezVous.find({
+        doctor: req.doctor._id,
+        dateRV: {
+          $gte: new Date(),
+          $lt: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+        },
+      });
+      if (rv) {
+        res.json(rv);
+      } else {
+        res.status(404).json({
+          message: "no appointments",
+        });
       }
     } catch (err) {
       res.status(404).json({ message: err.message });
