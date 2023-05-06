@@ -4,6 +4,7 @@ import DoctorClass from "../entities/Doctor.js";
 import doctorService from "../services/DoctorService.js";
 import Doctor from "../models/Doctor.js";
 import Person from "../models/Person.js";
+import personService from "../services/PersonService.js";
 const doctorControl = express.Router();
  doctorControl.post(
     "/register",
@@ -103,13 +104,25 @@ const doctorControl = express.Router();
     doctorControl.delete(
         "/:id",
         asyncHandler(async (req, res) => {
-            const doctor = await doctorService.getDoctorById(req.params.id);
-            if (doctor) {
-                const deletedDoctor = await doctorService.deleteDoctor(req.params.id);
-                res.json({deletedDoctor, message: "Doctor Deleted" });
-            } else {
-                res.status(404).json({ message: "Doctor Not Found" });
+            try
+            {
+                const doctor = await doctorService.getDoctorById(req.params.id);
+                const person = await Person.findById(doctor.person);
+                if (doctor) {
+                    const deletedDoctor = await doctorService.deleteDoctor(req.params.id);
+                    const deletedPerson = await personService.deletePerson(person._id);
+                    res.json({deletedDoctor,deletedPerson, message: "Doctor Deleted" });
+            }   
+                else 
+                {
+                    res.status(404).json({ message: "Doctor Not Found" });
+                }
             }
+            catch(e)
+            {
+                res.status(404).json({message : e});
+            }
+            
     
     
         }

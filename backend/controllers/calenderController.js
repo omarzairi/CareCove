@@ -8,17 +8,17 @@ const calenderControl = express.Router();
 calenderControl.post(
   "/addCalender",
   asyncHandler(async (req, res) => {
-    const { availability, hour, date, doctor } = req.body;
+    const { date, doctor } = req.body;
     try {
-      const calender = new Calender(availability, hour, date, doctor);
-      const createdCalender = await calenderService.createCalender(
-        calender.toObject()
-      );
+      const createdCalender = await calenderService.createCalender({
+        date,
+        doctor,
+      });
+
       if (createdCalender) {
         res.status(201).json({
           _id: createdCalender._id,
           availability: createdCalender.availability,
-          hour: createdCalender.hour,
           date: createdCalender.date,
           doctor: createdCalender.doctor,
           msg: "Calender Created Successfully!",

@@ -126,12 +126,21 @@ patientControl.put(
 patientControl.delete(
   "/:id",
   asyncHandler(async (req, res) => {
-    const patient = await patientService.getPatientById(req.params.id);
+    try
+    {
+      const patient = await patientService.getPatientById(req.params.id);
+      const person = await Person.findById(patient.person);
     if (patient) {
       const deletedPatient = await patientService.deletePatient(req.params.id);
-      res.json({ deletedPatient, message: "Patient Deleted" });
+      const deletedPerson = await personService.deletePerson(person._id);
+      res.json({ deletedPatient,deletedPerson, message: "Patient Deleted" });
     } else {
       res.status(404).json({ message: "Patient Not Found" });
+    }
+    } 
+    catch(e)
+    {
+      res.status(404).json({message : e});
     }
   })
 );
