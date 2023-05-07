@@ -144,5 +144,39 @@ RendezVousControl.get(
     }
   })
 );
+RendezVousControl.get(
+  "/doctor/getAllMyRV",
+  protectDoctor,
+  asyncHandler(async (req, res) => {
+    try {
+      const rv = await RendezVous.find({
+        doctor: req.doctor._id,
+        dateRV: {
+          $gte: new Date(),
+        },
+      })
+        .sort({ dateRV: 1 })
+        .populate({
+          path: "Patient",
+
+          populate: {
+            path: "person",
+            model: "Person",
+            select: "-password",
+          },
+        });
+
+      if (rv) {
+        res.json(rv);
+      } else {
+        res.status(404).json({
+          message: "no appointments",
+        });
+      }
+    } catch (err) {
+      res.status(404).json({ message: err.message });
+    }
+  })
+);
 
 export default RendezVousControl;
