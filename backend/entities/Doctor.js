@@ -10,6 +10,7 @@ class DoctorClass extends PersonClass{
         this.specialty=specialty;
         this.price=price;
         this.description=description;
+
     }
     getPerson() { return this.person; }
     getDescription(){return this.description;}
@@ -23,6 +24,7 @@ class DoctorClass extends PersonClass{
     setSpecialty(specialty){ this.specialty=specialty;}
     setPrice(price){this.price=price}
     setDescription(description){this.description=description;}
+    
     toObject() { return {person : this.person, location : this.location ,rating :this.rating,specialty:this.specialty,price:this.price,description:this.description};}
 
 }

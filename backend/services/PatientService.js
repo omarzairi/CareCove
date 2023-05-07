@@ -10,6 +10,7 @@ const patientService = {
       height,
       weight,
       amount,
+      joinedAt:new Date()
     });
     return await patient.save();
   },

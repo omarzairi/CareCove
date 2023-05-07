@@ -3,7 +3,7 @@ import Person from "../models/Person.js";
 const doctorService = {
     async createDoctor ({person,location,rating,specialty,price,description}) 
     {
-        const doctor = await Doctor.create({person,location,rating,specialty,price,description});
+        const doctor = await Doctor.create({person,location,rating,specialty,price,description,joinedAt:new Date()});
         return await doctor.save();
     },
     async getDoctorById(doctorId) 
