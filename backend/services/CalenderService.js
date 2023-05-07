@@ -48,10 +48,10 @@ const calenderService = {
   },
   async getCalenderByDoctorId(doctorId) {
     const calenders = await Calender.find({ doctor: doctorId });
-    if (!calender) {
+    if (!calenders) {
       throw new Error("Calender not found");
     }
-    return calender.toObject();
+    return calenders.map((calenders) => calenders.toObject());
   }
 };
 export default calenderService;

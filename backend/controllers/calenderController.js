@@ -79,9 +79,9 @@ calenderControl.delete(
 );
 
 calenderControl.get(
-  "getByDoctorid/:id",
+  "/getByDoctorid/:id",
   asyncHandler(async (req, res) => {
-    const calenders= await calenderService.getCalenderByIdDoctor(req.params.doctor);
+    const calenders= await calenderService.getCalenderByDoctorId(req.params.id);
     if (calenders) {
       res.json(calenders);
     } else {
