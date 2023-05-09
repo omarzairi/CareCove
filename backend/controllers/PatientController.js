@@ -12,7 +12,7 @@ const patientControl = express.Router();
 patientControl.post(
   "/register",
   asyncHandler(async (req, res) => {
-    const { person, allergies, bloodType, height, weight,amount } = req.body;
+    const { person, allergies, bloodType, height, weight, amount } = req.body;
     const perr = await Person.findById(person);
     const patient = new PatientClass(
       perr.firstName,
@@ -27,7 +27,7 @@ patientControl.post(
       bloodType,
       height,
       weight,
-      amount,
+      amount
     );
     console.log(patient);
     const createdPatient = await patientService.createPatient({
@@ -36,7 +36,7 @@ patientControl.post(
       bloodType: patient.bloodType,
       height: patient.height,
       weight: patient.weight,
-      amount:patient.amount,
+      amount: patient.amount,
     });
     if (createdPatient) {
       res.status(201).json({
@@ -46,9 +46,9 @@ patientControl.post(
         bloodType: createdPatient.bloodType,
         height: createdPatient.height,
         weight: createdPatient.weight,
-        amount:createdPatient.amount,
+        amount: createdPatient.amount,
         msg: "Patient created successfully",
-        token: generateToken(patient._id, patient.firstName, patient.role),
+        token: generateToken(patient._id, perr.firstName, perr.role),
       });
     } else {
       throw new Error("Something Went Wrong Invalid User Data!");
@@ -73,7 +73,7 @@ patientControl.post(
         firstName: person.firstName,
         lastName: person.lastName,
         birthDate: person.birthDate,
-        image:person.image,
+        image: person.image,
         gender: person.gender,
         role: person.role,
         email: person.email,
@@ -126,21 +126,20 @@ patientControl.put(
 patientControl.delete(
   "/:id",
   asyncHandler(async (req, res) => {
-    try
-    {
+    try {
       const patient = await patientService.getPatientById(req.params.id);
       const person = await Person.findById(patient.person);
-    if (patient) {
-      const deletedPatient = await patientService.deletePatient(req.params.id);
-      const deletedPerson = await personService.deletePerson(person._id);
-      res.json({ deletedPatient,deletedPerson, message: "Patient Deleted" });
-    } else {
-      res.status(404).json({ message: "Patient Not Found" });
-    }
-    } 
-    catch(e)
-    {
-      res.status(404).json({message : e});
+      if (patient) {
+        const deletedPatient = await patientService.deletePatient(
+          req.params.id
+        );
+        const deletedPerson = await personService.deletePerson(person._id);
+        res.json({ deletedPatient, deletedPerson, message: "Patient Deleted" });
+      } else {
+        res.status(404).json({ message: "Patient Not Found" });
+      }
+    } catch (e) {
+      res.status(404).json({ message: e });
     }
   })
 );
