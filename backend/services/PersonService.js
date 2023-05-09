@@ -65,7 +65,7 @@ const personService = {
       throw new Error("Person not found");
     }
     await Person.findByIdAndDelete(personId);
-    return person.toObject();
+    return person;
   },
 };
 
