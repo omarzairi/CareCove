@@ -11,7 +11,7 @@ const personControl = express.Router();
 
 personControl.get(
   "/",
-  protectPatient,
+ 
   asyncHandler(async (req, res) => {
     const persons = await personService.getAllPersons();
     res.json(persons);
