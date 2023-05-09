@@ -2,7 +2,14 @@ import Patient from "../models/Patient.js";
 import Person from "../models/Person.js";
 
 const patientService = {
-  async createPatient({ person, allergies, bloodType, height, weight,amount }) {
+  async createPatient({
+    person,
+    allergies,
+    bloodType,
+    height,
+    weight,
+    amount,
+  }) {
     const patient = await Patient.create({
       person,
       allergies,
@@ -10,7 +17,7 @@ const patientService = {
       height,
       weight,
       amount,
-      joinedAt:new Date()
+      joinedAt: new Date(),
     });
     return await patient.save();
   },
@@ -45,9 +52,8 @@ const patientService = {
     if (!patient) {
       throw new Error("Patient not found");
     }
-    await Person.findByIdAndDelete(patient.person);
     await Patient.findByIdAndDelete(patientId);
-    return patient.toObject();
+    return patient;
   },
   async getPatientByFirstName(firstName) {
     const patients = await Patient.find()
