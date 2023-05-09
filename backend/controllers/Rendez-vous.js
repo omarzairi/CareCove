@@ -15,13 +15,12 @@ const RendezVousControl = express.Router();
 
 RendezVousControl.post(
   "/addRendezVous",
-  protectPatient,
+  
   asyncHandler(async (req, res) => {
-    const { heureRV, doctor } = req.body;
-    const patient = req.patient._id;
-    const dateRV = new Date(req.body.date);
+    const { heureRV, doctor, Patient} = req.body;
+    const dateRV = new Date(req.body.dateRV);
     const createdRendezVous = await RendezVousService.createRendezVous({
-      Patient: patient,
+      Patient: Patient,
       doctor,
       dateRV,
       heureRV,
