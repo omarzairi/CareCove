@@ -48,7 +48,7 @@ patientControl.post(
         weight: createdPatient.weight,
         amount: createdPatient.amount,
         msg: "Patient created successfully",
-        token: generateToken(patient._id, perr.firstName, perr.role),
+        token: generateToken(createdPatient._id, perr.firstName, perr.role),
       });
     } else {
       throw new Error("Something Went Wrong Invalid User Data!");
