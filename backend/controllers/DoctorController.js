@@ -11,7 +11,7 @@ const doctorControl = express.Router();
 doctorControl.post(
   "/register",
   asyncHandler(async (req, res) => {
-    const { person, rating, location, specialty, price, description } =
+    const { person, rating, location, specialty, price, description,experience } =
       req.body;
     const docc = await Person.findById(person);
     const doctor = new DoctorClass(
@@ -28,7 +28,8 @@ doctorControl.post(
       rating,
       specialty,
       price,
-      description
+      description,
+      experience
     );
     console.log(doctor);
     const createdDoctor = await doctorService.createDoctor({
@@ -38,6 +39,7 @@ doctorControl.post(
       specialty: doctor.specialty,
       price: doctor.price,
       description: doctor.description,
+      experience:doctor.experience,
     });
     if (createdDoctor) {
       res.status(201).json({
@@ -48,6 +50,7 @@ doctorControl.post(
         specialty: createdDoctor.specialty,
         price: createdDoctor.price,
         description: createdDoctor.description,
+        experience:createdDoctor.experience,
         msg: " Doctor created successfully",
       });
     } else {

@@ -8,6 +8,7 @@ const doctorService = {
     specialty,
     price,
     description,
+    experience,
   }) {
     const doctor = await Doctor.create({
       person,
@@ -16,6 +17,7 @@ const doctorService = {
       specialty,
       price,
       description,
+      experience,
       joinedAt: new Date(),
     });
     return await doctor.save();
@@ -42,7 +44,7 @@ const doctorService = {
     doctor.specialty = updateData.specialty || doctor.specialty;
     doctor.price = updateData.price || doctor.price;
     doctor.description = updateData.description || doctor.description;
-
+    doctor.experience=updateData.experience || doctor.experience;
     const updatedDoctor = await doctor.save();
     return updatedDoctor.toObject();
   },

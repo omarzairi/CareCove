@@ -23,6 +23,7 @@ const DoctorSchema = new mongoose.Schema({
     required: true,
   },
   description: { type: String, required: true },
+  experience:{type: Number, required: true},
   joinedAt:{type:Date}
 
 });
