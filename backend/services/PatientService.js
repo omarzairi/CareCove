@@ -72,6 +72,23 @@ const patientService = {
       .filter((patient) => patient.person !== null)
       .map((patient) => patient.toObject());
   },
+  async changePassword(patientId,{oldPassword,newPassword}) 
+  {
+    const patient=await Patient.findById(patientId).populate("person");
+    if(patient)
+    {
+    if (patient.person.password==oldPassword)
+    { 
+       patient.person.password = newPassword;
+        const updatedPatient = await patient.save();
+        
+        return updatedPatient.toObject();
+    }
+    else throw new Error("Invalid password provided");
+  }
+  else throw new Error("Patient not found");
+}
+
 };
 
 export default patientService;

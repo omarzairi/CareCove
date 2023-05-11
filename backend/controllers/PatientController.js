@@ -172,4 +172,18 @@ patientControl.get(
   })
 );
 
+patientControl.put(
+  "/changePassword/:id",
+  asyncHandler(async (req, res) => {
+    const updatedPatient=await patientService.changePassword(req.params.id,{oldPassword:req.body.oldPassword, newPassword:req.body.newPassword});
+    if(updatedPatient){
+      res.json(updatedPatient);
+  }
+  else{
+    res.status(404).json({ message: "Invalid password provided" });
+  }
+  }
+)
+);
+
 export default patientControl;
