@@ -222,5 +222,42 @@ RendezVousControl.get(
     }
   })
 );
+//doctor get my latest rendez-vous with a specific Person
+RendezVousControl.get(
+  "/doctor/getMyLatestRV/:id",
+  protectDoctor,
+  asyncHandler(async (req, res) => {
+    try {
+      const pat = await Patient.findOne({ person: req.params.id });
+      const rv = await RendezVous.find({
+        doctor: req.doctor._id,
+        Patient: pat._id,
+        dateRV: {
+          $gte: new Date(),
+        },
+      })
+        .sort({ dateRV: -1 })
+        .limit(1)
+        .populate({
+          path: "Patient",
+          select: "-password",
+          populate: {
+            path: "person",
+            model: "Person",
+            select: "-password",
+          },
+        });
+      if (rv) {
+        res.json(rv);
+      } else {
+        res.status(404).json({
+          message: "no appointments",
+        });
+      }
+    } catch (err) {
+      res.status(404).json({ message: err.message });
+    }
+  })
+);
 
 export default RendezVousControl;
