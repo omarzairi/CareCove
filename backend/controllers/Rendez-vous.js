@@ -11,53 +11,98 @@ import patientService from "../services/PatientService.js";
 import doctorService from "../services/DoctorService.js";
 import protectDoctor from "../middleware/doctorAuth.js";
 import RendezVous from "../models/Rendez-vous.js";
+import Calender from "../models/Calender.js";
 const RendezVousControl = express.Router();
 
 RendezVousControl.post(
   "/addRendezVous",
-  
-  asyncHandler(async (req, res) => {
-    const { heureRV, doctor, Patient} = req.body;
-    const dateRV = new Date(req.body.dateRV);
-    const createdRendezVous = await RendezVousService.createRendezVous({
-      Patient: Patient,
-      doctor,
-      dateRV,
-      heureRV,
-    });
-    if (createdRendezVous) {
-      const patInfo = await patientService.getPatientById(
-        createdRendezVous.Patient.toString()
-      );
-      const DocInfo = await doctorService.getDoctorById(
-        createdRendezVous.doctor.toString()
-      );
-      var options = {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      };
-      const notification = await notificationService.createNotification({
-        action: `${patInfo.person.firstName} ${
-          patInfo.person.lastName
-        } has booked an appointment with you for the ${createdRendezVous.dateRV.toLocaleDateString(
-          "en-US",
-          options
-        )} at ${createdRendezVous.heureRV}`,
-        dateNotification: new Date(),
-        person: DocInfo.person._id,
-      });
 
-      if (notification) {
-        res.status(201).json({
-          notification,
-          createdRendezVous,
-          message: "Appointment Booked Successfully !",
-        });
+  asyncHandler(async (req, res) => {
+    const { heureRV, doctor, Patient } = req.body;
+    const dateRV = new Date(req.body.dateRV);
+    const calender = await Calender.findOne({
+      doctor: doctor,
+      date: {
+        $gte: new Date(
+          dateRV.getFullYear(),
+          dateRV.getMonth(),
+          dateRV.getDate()
+        ),
+        $lt: new Date(
+          dateRV.getFullYear(),
+          dateRV.getMonth(),
+          dateRV.getDate() + 1
+        ),
+      },
+    });
+    if (calender) {
+      const time = calender.availability.find((time) => time.time === heureRV);
+      if (time) {
+        if (time.isAvailable) {
+          const patient = await patientService.getPatientById(Patient);
+          const doc = await doctorService.getDoctorById(doctor);
+          if (patient.amount >= doc.price) {
+            const createdRendezVous = await RendezVousService.createRendezVous({
+              Patient: Patient,
+              doctor,
+              dateRV,
+              heureRV,
+            });
+            if (createdRendezVous) {
+              patient.amount = patient.amount - doc.price;
+              await patient.save();
+
+              time.isAvailable = false;
+              await calender.save();
+
+              const patInfo = await patientService.getPatientById(
+                createdRendezVous.Patient.toString()
+              );
+              const DocInfo = await doctorService.getDoctorById(
+                createdRendezVous.doctor.toString()
+              );
+              var options = {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              };
+              const notification = await notificationService.createNotification(
+                {
+                  action: `${patInfo.person.firstName} ${
+                    patInfo.person.lastName
+                  } has booked an appointment with you for the ${createdRendezVous.dateRV.toLocaleDateString(
+                    "en-US",
+                    options
+                  )} at ${createdRendezVous.heureRV}`,
+                  dateNotification: new Date(),
+                  person: DocInfo.person._id,
+                }
+              );
+
+              if (notification) {
+                res.status(201).json({
+                  notification,
+                  createdRendezVous,
+                  message: "Appointment Booked Successfully !",
+                });
+              } else {
+                res.status(401).json({ msg: "something went wrong" });
+              }
+            }
+          } else {
+            res.status(401).json({
+              msg: "not enough credit ",
+            });
+          }
+        } else {
+          res.status(401).json({ msg: "this time is not available" });
+        }
       } else {
-        res.status(401).json({ msg: "something went wrong" });
+        res.status(401).json({ msg: "this time is not available" });
       }
+    } else {
+      res.status(401).json({ msg: "this time is not available" });
     }
   })
 );
