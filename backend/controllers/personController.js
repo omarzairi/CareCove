@@ -11,7 +11,6 @@ const personControl = express.Router();
 
 personControl.get(
   "/",
- 
   asyncHandler(async (req, res) => {
     const persons = await personService.getAllPersons();
     res.json(persons);
@@ -22,8 +21,16 @@ personControl.post(
   "/register",
   asyncHandler(async (req, res) => {
     req.body.email = req.body.email.toLowerCase();
-    const { firstName, lastName, birthDate,image, gender, role, email, password } =
-      req.body;
+    const {
+      firstName,
+      lastName,
+      birthDate,
+      image,
+      gender,
+      role,
+      email,
+      password,
+    } = req.body;
     const exist = await Person.findOne({ email });
     if (exist) {
       res.status(401).json({ msg: "User With This Email Already Exists!" });
@@ -67,10 +74,9 @@ personControl.post(
 
 personControl.get(
   "/:id",
-  protectPerson,
   asyncHandler(async (req, res) => {
     try {
-      const person = await personService.getPersonById(req.person._id);
+      const person = await personService.getPersonById(req.params.id);
       if (person) {
         res.json(person);
       } else {
