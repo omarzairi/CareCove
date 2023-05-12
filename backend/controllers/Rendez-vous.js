@@ -236,7 +236,7 @@ RendezVousControl.get(
           $gte: new Date(),
         },
       })
-        .sort({ dateRV: -1 })
+        .sort({ dateRV: 1 })
         .limit(1)
         .populate({
           path: "Patient",

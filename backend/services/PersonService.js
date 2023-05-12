@@ -30,7 +30,6 @@ const personService = {
   },
   async getPersonById(personId) {
     const person = await Person.findById(personId).select("-password");
-    console.log(personId, "h", person, "h");
     if (!person) {
       throw new Error("Person not found");
     }
