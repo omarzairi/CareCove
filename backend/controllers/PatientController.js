@@ -109,14 +109,11 @@ patientControl.get(
 patientControl.put(
   "/:id",
   asyncHandler(async (req, res) => {
-    const patient = await patientService.getPatientById(req.params.id);
+    const patient = await patientService.updatePatient(req.params.id,req.body);
+    
     if (patient) {
-      const updateData = req.body;
-      const updatedPatient = await patientService.updatePatient(
-        req.params.id,
-        updateData
-      );
-      res.json({ updatedPatient, message: "Patient Updated" });
+      
+      res.json({ patient, message: "Patient Updated" });
     } else {
       res.status(404).json({ message: "Patient Not Found" });
     }

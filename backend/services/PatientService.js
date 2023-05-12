@@ -37,13 +37,23 @@ const patientService = {
     if (!patient) {
       throw new Error("Patient not found");
     }
-    patient.person = updateData.person || patient.person;
+    const perr = patient.person;
+    perr.firstName = updateData.firstName;
+    perr.lastName = updateData.lastName;
+    perr.birthDate = updateData.birthDate;
+    perr.gender= updateData.gender;
+    perr.role=  updateData.role;
+    perr.email= updateData.email;
+    perr.password=perr.password;
+
+    
+    
     patient.allergies = updateData.allergies || patient.allergies;
     patient.bloodType = updateData.bloodType || patient.bloodType;
     patient.height = updateData.height || patient.height;
     patient.weight = updateData.weight || patient.weight;
     patient.amount = updateData.amount || patient.amount;
-
+    await perr.save();
     const updatedPatient = await patient.save();
     return updatedPatient.toObject();
   },
@@ -79,10 +89,12 @@ const patientService = {
     {
     if (patient.person.password==oldPassword)
     { 
-       patient.person.password = newPassword;
-        const updatedPatient = await patient.save();
+      const perr=patient.person;
+      perr.password=newPassword;
+      perr.save();
+        ;
         
-        return updatedPatient.toObject();
+        return patient.toObject();
     }
     else throw new Error("Invalid password provided");
   }
