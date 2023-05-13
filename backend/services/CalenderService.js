@@ -52,6 +52,6 @@ const calenderService = {
       throw new Error("Calender not found");
     }
     return calenders.map((calenders) => calenders.toObject());
-  }
+  },
 };
 export default calenderService;

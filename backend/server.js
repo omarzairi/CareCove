@@ -10,7 +10,9 @@ import doctorControl from "./controllers/DoctorController.js";
 import RendezVousControl from "./controllers/Rendez-vous.js";
 import messageControl from "./controllers/messageController.js";
 import consultationControl from "./controllers/ConsultationController.js";
+import { createRequire } from "module";
 
+const require = createRequire(import.meta.url);
 const app = express();
 app.use(cors());
 app.use(express.urlencoded());
@@ -31,4 +33,30 @@ app.use("/api/RendezVous", RendezVousControl);
 app.use("/api/message", messageControl);
 app.use("/api/consultation", consultationControl);
 
-app.listen(5000, console.log("app running...."));
+const server = app.listen(5000, console.log("app running...."));
+const socket = require("socket.io");
+const io = socket(server, {
+  cors: {
+    origin: "*",
+    credentials: true,
+  },
+});
+global.onlineUsers = new Map();
+io.on("connection", (socket) => {
+  global.chatSocket = socket;
+  socket.on("add-user", (userId) => {
+    onlineUsers.set(userId, socket.id);
+    console.log(onlineUsers);
+  });
+
+  socket.on("send-msg", (data) => {
+    const sendUserSocket = onlineUsers.get(data.to);
+    if (sendUserSocket) {
+      socket.broadcast.emit("msg-recieve", {
+        from: data.from,
+        to: data.to,
+        message: data.msg,
+      });
+    }
+  });
+});
