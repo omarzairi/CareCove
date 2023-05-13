@@ -42,7 +42,7 @@ const patientService = {
     perr.lastName = updateData.lastName;
     perr.birthDate = updateData.birthDate;
     perr.gender= updateData.gender;
-    perr.role=  updateData.role;
+    perr.role=  perr.role;
     perr.email= updateData.email;
     perr.password=perr.password;
     
