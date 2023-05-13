@@ -45,6 +45,8 @@ const patientService = {
     perr.role=  updateData.role;
     perr.email= updateData.email;
     perr.password=perr.password;
+    
+    
 
     
     
@@ -52,7 +54,7 @@ const patientService = {
     patient.bloodType = updateData.bloodType || patient.bloodType;
     patient.height = updateData.height || patient.height;
     patient.weight = updateData.weight || patient.weight;
-    patient.amount = updateData.amount || patient.amount;
+    patient.amount = patient.amount || patient.amount;
     await perr.save();
     const updatedPatient = await patient.save();
     return updatedPatient.toObject();

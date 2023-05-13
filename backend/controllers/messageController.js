@@ -9,7 +9,7 @@ const messageControl = express.Router();
 
 messageControl.post(
   "/patientSend",
-  protectPatient,
+  
   asyncHandler(async (req, res) => {
     try {
       const from = req.patient._id;
@@ -77,6 +77,28 @@ messageControl.post(
   asyncHandler(async (req, res) => {
     try {
       const from = req.doctor._id;
+      const to = req.body.to;
+      const messages = await Message.find({
+        users: { $all: [from.toString(), to.toString()] },
+      }).sort({ updatedAt: 1 });
+      const projectedMessages = messages.map((msg) => {
+        return {
+          fromSelf: msg.sender.toString() === from.toString(),
+          message: msg.message.text,
+        };
+      });
+      res.json(projectedMessages);
+    } catch (err) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  })
+);
+
+messageControl.post(
+  "/getmessagesPatient",
+  asyncHandler(async (req, res) => {
+    try {
+      const from = req.patient._id;
       const to = req.body.to;
       const messages = await Message.find({
         users: { $all: [from.toString(), to.toString()] },
