@@ -30,6 +30,20 @@ commentControl.post(
 );
 
 commentControl.get(
+    "/getByDoctorid/:id",
+    asyncHandler(async (req, res) => {
+      const comments = await commentService.getCommentsByDoctorId(
+        req.params.id
+      );
+      if (comments) {
+        res.json(comments);
+      } else {
+        res.status(404).json({ message: "Comment Not Found" });
+      }
+    })
+  );
+
+commentControl.get(
     "/comments",
     asyncHandler( async (req,res)=>{
         try
