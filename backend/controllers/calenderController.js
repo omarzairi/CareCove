@@ -8,8 +8,11 @@ const calenderControl = express.Router();
 
 calenderControl.post(
   "/addCalender",
+  protectDoctor,
   asyncHandler(async (req, res) => {
-    const { date, doctor } = req.body;
+    const date = new Date(req.body.date);
+    const doctor = req.doctor._id;
+
     try {
       const createdCalender = await calenderService.createCalender({
         date,
@@ -106,7 +109,7 @@ calenderControl.post(
         ),
       },
     });
-    if (calenders.length > 0) {
+    if (calenders) {
       res.json(calenders);
     } else {
       res.status(404).json({ message: "Calender Not Found" });
