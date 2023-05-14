@@ -9,19 +9,21 @@ const messageControl = express.Router();
 
 messageControl.post(
   "/patientSend",
+  protectPatient,
   
   asyncHandler(async (req, res) => {
     try {
       const from = req.patient._id;
       const to = req.body.to;
       const message = await messageService.createMessage({
-        message: req.body.message,
+        message: { text: req.body.message },
         sender: from,
         users: [from.toString(), to.toString()],
       });
       if (message) return res.json({ msg: "Message added successfully." });
       else return res.json({ msg: "Failed to add message to the database" });
     } catch (err) {
+      console.log(err);
       res.status(500).json({ message: "Internal server error" });
     }
   })
@@ -96,6 +98,7 @@ messageControl.post(
 
 messageControl.post(
   "/getmessagesPatient",
+  protectPatient,
   asyncHandler(async (req, res) => {
     try {
       const from = req.patient._id;
