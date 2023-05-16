@@ -263,7 +263,7 @@ RendezVousControl.get(
 // get all patient RVs
 RendezVousControl.get(
   "/patient/getAllMyRV",
-  
+  protectPatient,
   asyncHandler(async (req, res) => {
     try {
       const rv = await RendezVous.find({

@@ -11,8 +11,15 @@ const doctorControl = express.Router();
 doctorControl.post(
   "/register",
   asyncHandler(async (req, res) => {
-    const { person, rating, location, specialty, price, description,experience } =
-      req.body;
+    const {
+      person,
+      rating,
+      location,
+      specialty,
+      price,
+      description,
+      experience,
+    } = req.body;
     const docc = await Person.findById(person);
     const doctor = new DoctorClass(
       docc.firstName,
@@ -39,7 +46,7 @@ doctorControl.post(
       specialty: doctor.specialty,
       price: doctor.price,
       description: doctor.description,
-      experience:doctor.experience,
+      experience: doctor.experience,
     });
     if (createdDoctor) {
       res.status(201).json({
@@ -50,7 +57,7 @@ doctorControl.post(
         specialty: createdDoctor.specialty,
         price: createdDoctor.price,
         description: createdDoctor.description,
-        experience:createdDoctor.experience,
+        experience: createdDoctor.experience,
         msg: " Doctor created successfully",
       });
     } else {
@@ -195,6 +202,19 @@ doctorControl.get(
         req.params.lastName
       );
       res.json(doctors);
+    } catch (err) {
+      res.send(404).json({ message: "not found" });
+    }
+  })
+);
+
+doctorControl.get(
+  "/getPersonId/:id",
+  asyncHandler(async (req, res) => {
+    try {
+      const doctor = await doctorService.getDoctorById(req.params.id);
+      const person = await personService.getPersonById(doctor.person);
+      res.json(person);
     } catch (err) {
       res.send(404).json({ message: "not found" });
     }

@@ -23,14 +23,19 @@ const doctorService = {
     return await doctor.save();
   },
   async getDoctorById(doctorId) {
-    const doctor = await Doctor.findById(doctorId).populate("person");
+    const doctor = await Doctor.findById(doctorId).populate({
+      path: 'person',
+    select: '-password'});
     if (!doctor) {
       throw new Error("Doctor not found");
     }
     return doctor;
   },
-  async getAllDoctors() {
-    const doctors = await Doctor.find().populate("person");
+  async  getAllDoctors() {
+    const doctors = await Doctor.find().populate({
+      path: 'person',
+      select: '-password', // Exclude the "password" field from the query
+    });
     return doctors.map((doctor) => doctor.toObject());
   },
   async updateDoctor(doctorId, updateData) {
@@ -58,7 +63,10 @@ const doctorService = {
   },
   async getDoctorBySpeciality(speciality) {
     const doctors = await Doctor.find({ specialty: speciality }).populate(
-      "person"
+      {
+        path: 'person',
+      select: '-password'}
+      
     );
     return doctors.map((doctor) => doctor.toObject());
   },

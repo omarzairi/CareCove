@@ -23,9 +23,8 @@ const DoctorSchema = new mongoose.Schema({
     required: true,
   },
   description: { type: String, required: true },
-  experience:{type: Number, required: true},
-  joinedAt:{type:Date}
-
+  experience: { type: Number, required: true },
+  joinedAt: { type: Date },
 });
 
 const Doctor = mongoose.model("Doctor", DoctorSchema);
