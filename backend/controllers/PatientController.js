@@ -109,10 +109,9 @@ patientControl.get(
 patientControl.put(
   "/:id",
   asyncHandler(async (req, res) => {
-    const patient = await patientService.updatePatient(req.params.id,req.body);
-    
+    const patient = await patientService.updatePatient(req.params.id, req.body);
+
     if (patient) {
-      
       res.json({ patient, message: "Patient Updated" });
     } else {
       res.status(404).json({ message: "Patient Not Found" });
@@ -172,15 +171,29 @@ patientControl.get(
 patientControl.put(
   "/changePassword/:id",
   asyncHandler(async (req, res) => {
-    const updatedPatient=await patientService.changePassword(req.params.id,{oldPassword:req.body.oldPassword, newPassword:req.body.newPassword});
-    if(updatedPatient){
+    const updatedPatient = await patientService.changePassword(req.params.id, {
+      oldPassword: req.body.oldPassword,
+      newPassword: req.body.newPassword,
+    });
+    if (updatedPatient) {
       res.json(updatedPatient);
-  }
-  else{
-    res.status(404).json({ message: "Invalid password provided" });
-  }
-  }
-)
+    } else {
+      res.status(404).json({ message: "Invalid password provided" });
+    }
+  })
+);
+
+patientControl.get(
+  "/getPersonId/:id",
+  asyncHandler(async (req, res) => {
+    try {
+      const patient = await patientService.getPatientById(req.params.id);
+      const person = await Person.findById(patient.person);
+      res.json(person);
+    } catch (err) {
+      res.send(404).json({ message: "not found" });
+    }
+  })
 );
 
 export default patientControl;

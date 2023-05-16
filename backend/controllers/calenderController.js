@@ -81,6 +81,23 @@ calenderControl.delete(
     }
   })
 );
+calenderControl.get(
+  "/getAfterToday/:id",
+  asyncHandler(async (req, res) => {
+    const calenders = await Calender.find({
+      doctor: req.params.id,
+      date: {
+        $gte: new Date(new Date().setHours(0, 0, 0, 0)),
+      },
+    }).sort({ date: 1 });
+
+    if (calenders) {
+      res.json(calenders);
+    } else {
+      res.status(404).json({ message: "Calender Not Found" });
+    }
+  })
+);
 
 calenderControl.get(
   "/getByDoctorid/:id",
