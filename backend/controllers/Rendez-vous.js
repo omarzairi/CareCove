@@ -92,17 +92,17 @@ RendezVousControl.post(
             }
           } else {
             res.status(401).json({
-              msg: "not enough credit ",
+              msg: "Not Enough Credit !",
             });
           }
         } else {
-          res.status(401).json({ msg: "this time is not available" });
+          res.status(401).json({ msg: "This time is not available!" });
         }
       } else {
-        res.status(401).json({ msg: "this time is not available" });
+        res.status(401).json({ msg: "This time is not available!" });
       }
     } else {
-      res.status(401).json({ msg: "this time is not available" });
+      res.status(401).json({ msg: "This time is not available!" });
     }
   })
 );
