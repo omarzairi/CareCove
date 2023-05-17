@@ -9,6 +9,7 @@ import commentControl from "./controllers/commentController.js";
 import doctorControl from "./controllers/DoctorController.js";
 import RendezVousControl from "./controllers/Rendez-vous.js";
 import messageControl from "./controllers/messageController.js";
+import notificationAdminControl from "./controllers/NotificationAdminController.js";
 import consultationControl from "./controllers/ConsultationController.js";
 import { createRequire } from "module";
 
@@ -32,6 +33,7 @@ app.use("/api/patient", patientControl);
 app.use("/api/RendezVous", RendezVousControl);
 app.use("/api/message", messageControl);
 app.use("/api/consultation", consultationControl);
+app.use("/api/notificationAdmin",notificationAdminControl);
 
 const server = app.listen(5000, console.log("app running...."));
 const socket = require("socket.io");

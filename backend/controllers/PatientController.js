@@ -6,6 +6,7 @@ import Person from "../models/Person.js";
 import personService from "../services/PersonService.js";
 import generateToken from "../utils/generateToken.js";
 import Patient from "../models/Patient.js";
+import notificationServiceAdmin from "../services/NotificationAdminService.js";
 
 const patientControl = express.Router();
 
@@ -39,6 +40,13 @@ patientControl.post(
       amount: patient.amount,
     });
     if (createdPatient) {
+      const notif = await notificationServiceAdmin.createNotification(
+        {
+          action:` A new Patient has Joined CareCove at`,
+          dateNotification: createdPatient.joinedAt,
+          person : perr,
+        }
+      );
       res.status(201).json({
         _id: createdPatient._id,
         person: createdPatient.person,
@@ -48,8 +56,11 @@ patientControl.post(
         weight: createdPatient.weight,
         amount: createdPatient.amount,
         msg: "Patient created successfully",
+        notif,
+        msgn:"message admin created ",
         token: generateToken(createdPatient._id, perr.firstName, perr.role),
       });
+      
     } else {
       throw new Error("Something Went Wrong Invalid User Data!");
     }
