@@ -30,8 +30,6 @@ RendezVousControl.post(
     })
 );
 
-
-
 RendezVousControl.get(
     "/RendezVous",
     asyncHandler( async (req,res)=>{

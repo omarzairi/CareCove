@@ -8,7 +8,30 @@ import protectPatient from "../middleware/patientAuth.js";
 import protectPerson from "../middleware/personAuth.js";
 
 const personControl = express.Router();
-
+personControl.post(
+  "/login",
+  asyncHandler(async (req, res) => {
+    const email = req.body.email.toLowerCase();
+    const password = req.body.password;
+    const patient = await Person.findOne({ email: email });
+    console.log(patient.firstName);
+    if (patient && password == patient.password && patient.role == "admin") {
+      res.status(201).json({
+        _id: patient._id,
+        firstName: patient.firstName,
+        lastName: patient.lastName,
+        birthDate: patient.birthDate,
+        gender: patient.gender,
+        role: patient.role,
+        email: patient.email,
+        msg: "Admin Logged In Successfully!",
+        token: generateToken(patient._id, patient.firstName, patient.role),
+      });
+    } else {
+      res.status(401).json({ msg: "Invalid Email or Password!" });
+    }
+  })
+);
 personControl.get(
   "/",
   protectPatient,
