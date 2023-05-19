@@ -39,7 +39,23 @@ const personService = {
     const persons = await Person.find();
     return persons.map((person) => person.toObject());
   },
-
+  async changePassword(personId,{oldPassword,newPassword}) 
+  {
+    const person=await Person.findById(personId).populate("person");
+    if(person)
+    {
+    if (person.password==oldPassword)
+    { 
+      person.password=newPassword;
+      person.save();
+        ;
+        
+        return person.toObject();
+    }
+    else throw new Error("Invalid password provided");
+  }
+  else throw new Error("Patient not found");
+},
   async updatePerson(personId, updateData) {
     const person = await Person.findById(personId);
     if (!person) {

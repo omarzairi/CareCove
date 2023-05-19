@@ -21,7 +21,30 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const personControl = express.Router();
-
+personControl.post(
+  "/login",
+  asyncHandler(async (req, res) => {
+    const email = req.body.email.toLowerCase();
+    const password = req.body.password;
+    const person = await Person.findOne({ email: email });
+    console.log(person.firstName);
+    if (person && password == person.password && person.role == "admin") {
+      res.status(201).json({
+        _id: person._id,
+        firstName: person.firstName,
+        lastName: person.lastName,
+        birthDate: person.birthDate,
+        gender: person.gender,
+        role: person.role,
+        email: person.email,
+        msg: "Admin Logged In Successfully!",
+        token: generateToken(person._id, person.firstName, person.role),
+      });
+    } else {
+      res.status(401).json({ msg: "Invalid Email or Password!" });
+    }
+  })
+);
 personControl.get(
   "/",
   asyncHandler(async (req, res) => {
@@ -159,6 +182,20 @@ personControl.delete(
       res.status(404).json({
         message: err.message,
       });
+    }
+  })
+);
+personControl.put(
+  "/changePassword/:id",
+  asyncHandler(async (req, res) => {
+    const updatedPerson = await personService.changePassword(req.params.id, {
+      oldPassword: req.body.oldPassword,
+      newPassword: req.body.newPassword,
+    });
+    if (updatedPerson) {
+      res.json(updatedPerson);
+    } else {
+      res.status(404).json({ message: "Invalid password provided" });
     }
   })
 );
