@@ -10,6 +10,7 @@ const personService = {
     firstName,
     lastName,
     birthDate,
+    image,
     role,
     gender,
     email,
@@ -19,6 +20,7 @@ const personService = {
       firstName,
       lastName,
       birthDate,
+      image,
       gender,
       role,
       email,
@@ -28,7 +30,6 @@ const personService = {
   },
   async getPersonById(personId) {
     const person = await Person.findById(personId).select("-password");
-    console.log(personId, "h", person, "h");
     if (!person) {
       throw new Error("Person not found");
     }
@@ -47,6 +48,8 @@ const personService = {
     person.firstName = updateData.firstName || person.firstName;
     person.lastName = updateData.lastName || person.lastName;
     person.birthDate = updateData.birthDate || person.birthDate;
+    person.image = updateData.image || person.image;
+
     person.gender = updateData.gender || person.gender;
     person.role = updateData.role || person.role;
     person.email = updateData.email || person.email;
@@ -61,7 +64,7 @@ const personService = {
       throw new Error("Person not found");
     }
     await Person.findByIdAndDelete(personId);
-    return person.toObject();
+    return person;
   },
 };
 

@@ -229,6 +229,7 @@
 /backend/node_modules/@aws-sdk/abort-controller/package.json
 /backend/node_modules/@aws-sdk/abort-controller/README.md
 /backend/node_modules/@aws-sdk/client-cognito-identity/dist-cjs/commands/CreateIdentityPoolCommand.js
+
 /backend/node_modules/@aws-sdk/client-cognito-identity/dist-cjs/commands/DeleteIdentitiesCommand.js
 /backend/node_modules/@aws-sdk/client-cognito-identity/dist-cjs/commands/DeleteIdentityPoolCommand.js
 /backend/node_modules/@aws-sdk/client-cognito-identity/dist-cjs/commands/DescribeIdentityCommand.js
@@ -14622,3 +14623,4 @@
 /backend/node_modules/yargs-parser/package.json
 /backend/node_modules/yargs-parser/README.md
 /backend/node_modules/.package-lock.json
+/frontend

@@ -4,27 +4,23 @@ import bcrypt from "bcryptjs";
 import res from "express/lib/response.js";
 
 const RendezVousService = {
-  async createRendezVous({
-    Patient,
-    Doctor,
-    dateRV,
-    heureRV
-  }) {
-    const RendezVous = await RendezVous.create({
-        Patient,
-        Doctor,
-        dateRV,
-        heureRV
+  async createRendezVous({ Patient, doctor, dateRV, heureRV }) {
+    const rendezVous = await RendezVous.create({
+      Patient,
+      doctor,
+      dateRV,
+      heureRV,
     });
-    return await RendezVous.save();
+    return await rendezVous.save();
   },
   async getRendezVousById(RendezVousId) {
-    const RendezVous = await RendezVousId.findById(RendezVousId).select("-password");
-    console.log(RendezVousId, "h", RendezVous, "h");
-    if (!RendezVous) {
+    const rendezVous = await RendezVous.findById(RendezVousId).select(
+      "-password"
+    );
+    if (!rendezVous) {
       throw new Error("RendezVous not found");
     }
-    return RendezVous;
+    return rendezVous;
   },
   async getAllRendezVous() {
     const RVS = await RendezVous.find();
@@ -33,25 +29,25 @@ const RendezVousService = {
 
   async updateRendezVous(RendezVousId, updateData) {
     const RV = await RendezVous.findById(RendezVousId);
-    if (!RendezVous) {
+    if (!RV) {
       throw new Error("RendezVous not found");
     }
-    RendezVous.Patient = updateData.Patient || Patient.firstName;
-    RendezVous.Doctor = updateData.Doctor || RendezVous.Doctor;
-    RendezVous.dateRV = updateData.dateRV || RendezVous.dateRV;
-    RendezVous.heureRV = updateData.heureRV || RendezVous.heureRV;
-   
+    RV.Patient = updateData.Patient || Patient.firstName;
+    RV.Doctor = updateData.doctor || RV.doctor;
+    RV.dateRV = updateData.dateRV || RV.dateRV;
+    RV.heureRV = updateData.heureRV || RV.heureRV;
+
     const updatedRendezVous = await RendezVous.save();
     return updatedRendezVous.toObject();
   },
 
   async deleteRendezVous(RendezVousId) {
-    const RendezVous = await RendezVous.findById(RendezVous);
-    if (!RendezVous) {
+    const rendezVous = await RendezVous.findById(RendezVous);
+    if (!rendezVous) {
       throw new Error("RendezVous not found");
     }
-    await RendezVous.findByIdAndDelete(RendezVousId);
-    return RendezVous.toObject();
+    await rendezVous.findByIdAndDelete(RendezVousId);
+    return rendezVous.toObject();
   },
 };
 

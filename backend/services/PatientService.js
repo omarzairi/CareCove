@@ -2,18 +2,27 @@ import Patient from "../models/Patient.js";
 import Person from "../models/Person.js";
 
 const patientService = {
-  async createPatient({ person, allergies, bloodType, height, weight }) {
+  async createPatient({
+    person,
+    allergies,
+    bloodType,
+    height,
+    weight,
+    amount,
+  }) {
     const patient = await Patient.create({
       person,
       allergies,
       bloodType,
       height,
       weight,
+      amount,
+      joinedAt: new Date(),
     });
     return await patient.save();
   },
   async getPatientById(patientId) {
-    const patient = await Patient.findById(patientId);
+    const patient = await Patient.findById(patientId).populate("person");
     if (!patient) {
       throw new Error("Patient not found");
     }
@@ -28,11 +37,25 @@ const patientService = {
     if (!patient) {
       throw new Error("Patient not found");
     }
-    patient.person = updateData.person || patient.person;
+    const perr = patient.person;
+    perr.firstName = updateData.firstName;
+    perr.lastName = updateData.lastName;
+    perr.birthDate = updateData.birthDate;
+    perr.gender= updateData.gender;
+    perr.role=  perr.role;
+    perr.email= updateData.email;
+    perr.password=perr.password;
+    
+    
+
+    
+    
     patient.allergies = updateData.allergies || patient.allergies;
     patient.bloodType = updateData.bloodType || patient.bloodType;
     patient.height = updateData.height || patient.height;
     patient.weight = updateData.weight || patient.weight;
+    patient.amount = patient.amount || patient.amount;
+    await perr.save();
     const updatedPatient = await patient.save();
     return updatedPatient.toObject();
   },
@@ -41,25 +64,45 @@ const patientService = {
     if (!patient) {
       throw new Error("Patient not found");
     }
-    await Person.findByIdAndDelete(patient.person);
     await Patient.findByIdAndDelete(patientId);
-    return patient.toObject();
+    return patient;
   },
-  async getPatientByFirstName(firstName)
-    {
-        const patients = await Patient.find()
-        .populate({ path: 'person', match: { firstName } })
-        .exec()
-      return patients.filter(patient => patient.person !== null).map(patient => patient.toObject());
-    },
+  async getPatientByFirstName(firstName) {
+    const patients = await Patient.find()
+      .populate({ path: "person", match: { firstName } })
+      .exec();
+    return patients
+      .filter((patient) => patient.person !== null)
+      .map((patient) => patient.toObject());
+  },
 
-    async getPatientByLastName(lastName)
+  async getPatientByLastName(lastName) {
+    const patients = await Patient.find()
+      .populate({ path: "person", match: { lastName } })
+      .exec();
+    return patients
+      .filter((patient) => patient.person !== null)
+      .map((patient) => patient.toObject());
+  },
+  async changePassword(patientId,{oldPassword,newPassword}) 
+  {
+    const patient=await Patient.findById(patientId).populate("person");
+    if(patient)
     {
-        const patients = await Patient.find()
-        .populate({ path: 'person', match: { lastName } })
-        .exec()
-      return patients.filter(patient => patient.person !== null).map(patient => patient.toObject());
-    },
+    if (patient.person.password==oldPassword)
+    { 
+      const perr=patient.person;
+      perr.password=newPassword;
+      perr.save();
+        ;
+        
+        return patient.toObject();
+    }
+    else throw new Error("Invalid password provided");
+  }
+  else throw new Error("Patient not found");
+}
+
 };
 
 export default patientService;

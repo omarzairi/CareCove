@@ -5,6 +5,7 @@ class PatientClass extends PersonClass {
     firstName,
     lastName,
     birthDate,
+    image,
     gender,
     role,
     email,
@@ -12,14 +13,18 @@ class PatientClass extends PersonClass {
     allergies,
     bloodType,
     height,
-    weight
+    weight,
+    amount
   ) {
-    super(firstName, lastName, birthDate, gender, role, email, password);
+    super(firstName, lastName, birthDate,image, gender, role, email, password);
     this.allergies = allergies;
     this.bloodType = bloodType;
     this.height = height;
     this.weight = weight;
+    this.amount=amount;
   }
+
+  getPerson() { return this.person; }
 
   getAllergies() {
     return this.allergies;
@@ -33,7 +38,15 @@ class PatientClass extends PersonClass {
   getWeight() {
     return this.weight;
   }
+  getAmount()
+  {
+    return this.amount;
+  }
 
+  setPerson(person)
+  {
+    this.person=person
+  }
   setAllergies(allergies) {
     this.allergies = allergies;
   }
@@ -45,6 +58,10 @@ class PatientClass extends PersonClass {
   }
   setWeight(weight) {
     this.weight = weight;
+  }
+  setAmount(amount)
+  {
+    this.amount=amount;
   }
 
   toObject() {

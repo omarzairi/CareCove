@@ -1,6 +1,7 @@
 import Jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import Person from "../models/Person.js";
+import Patient from "../models/Patient.js";
 const protectPatient = asyncHandler(async (req, res, next) => {
   let token;
   if (
@@ -10,7 +11,7 @@ const protectPatient = asyncHandler(async (req, res, next) => {
     try {
       token = req.headers.authorization.split(" ")[1];
       const decrypt = Jwt.verify(token, "CareCove");
-      req.patient = await Person.findById(decrypt._id).select("-password");
+      req.patient = await Patient.findById(decrypt._id);
       next();
     } catch (error) {
       console.log(error);

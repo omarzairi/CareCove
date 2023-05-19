@@ -2,10 +2,13 @@ import Calender from "../models/Calender.js";
 import res from "express/lib/response.js";
 
 const calenderService = {
-  async createCalender({ availability, hour, date, doctor }) {
+  async createCalender({ date, doctor }) {
+    let availability = [];
+    for (let i = 9; i <= 17; i++) {
+      availability.push({ time: i, isAvailable: true });
+    }
     const calender = await Calender.create({
       availability,
-      hour,
       date,
       doctor,
     });
@@ -29,10 +32,8 @@ const calenderService = {
       throw new Error("Calender not found");
     }
     calender.availability = updateData.availability || calender.availability;
-    calender.hour = updateData.hour || calender.hour;
     calender.date = updateData.date || calender.date;
     calender.doctor = updateData.doctor || calender.doctor;
-
     const updatedCalender = await calender.save();
     return updatedCalender.toObject();
   },
@@ -44,6 +45,13 @@ const calenderService = {
     }
     await Calender.findByIdAndDelete(calenderId);
     return calender.toObject();
+  },
+  async getCalenderByDoctorId(doctorId) {
+    const calenders = await Calender.find({ doctor: doctorId });
+    if (!calenders) {
+      throw new Error("Calender not found");
+    }
+    return calenders.map((calenders) => calenders.toObject());
   },
 };
 export default calenderService;

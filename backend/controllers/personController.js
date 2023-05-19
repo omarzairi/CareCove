@@ -6,6 +6,19 @@ import PersonClass from "../entities/Person.js";
 import generateToken from "../utils/generateToken.js";
 import protectPatient from "../middleware/patientAuth.js";
 import protectPerson from "../middleware/personAuth.js";
+import cloudinary from "../config/cloudinary.js";
+import multer from "multer";
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // Specify the directory where files should be saved
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname); // Use a unique filename to prevent overwriting
+  },
+});
+
+const upload = multer({ storage: storage });
 
 const personControl = express.Router();
 personControl.post(
@@ -34,7 +47,6 @@ personControl.post(
 );
 personControl.get(
   "/",
-  protectPatient,
   asyncHandler(async (req, res) => {
     const persons = await personService.getAllPersons();
     res.json(persons);
@@ -43,55 +55,81 @@ personControl.get(
 
 personControl.post(
   "/register",
+  upload.single("image"),
   asyncHandler(async (req, res) => {
-    req.body.email = req.body.email.toLowerCase();
-    const { firstName, lastName, birthDate, gender, role, email, password } =
-      req.body;
-    const exist = await Person.findOne({ email });
-    if (exist) {
-      res.status(401).json({ msg: "User With This Email Already Exists!" });
-    } else {
-      const person = new PersonClass(
+    try {
+      req.body.email = req.body.email.toLowerCase();
+      const {
         firstName,
         lastName,
         birthDate,
+
         gender,
         role,
         email,
-        password
-      );
-      const createdPerson = await personService.createPerson(person.toObject());
-      if (createdPerson) {
-        res.status(201).json({
-          _id: createdPerson._id,
-          firstName: createdPerson.firstName,
-          lastName: createdPerson.lastName,
-          birthDate: createdPerson.birthDate,
-          gender: createdPerson.gender,
-          role: createdPerson.role,
-          email: createdPerson.email,
-          msg: "User Created Successfully!",
-          token: generateToken(
-            createdPerson._id,
-            createdPerson.firstName,
-            createdPerson.role
-          ),
-        });
+        password,
+      } = req.body;
+
+      const exist = await Person.findOne({ email });
+      if (exist) {
+        res.status(401).json({ msg: "User With This Email Already Exists!" });
       } else {
-        res
-          .status(401)
-          .json({ msg: "Something Went Wrong Invalid User Data!" });
+        const image = req.file.path;
+        console.log(image);
+        const result = await cloudinary.uploader.upload(image, {
+          folder: "person",
+        });
+        const person = new PersonClass(
+          firstName,
+          lastName,
+          birthDate,
+          result.secure_url,
+          gender,
+          role,
+          email,
+          password
+        );
+        console.log(person.toObject());
+        const createdPerson = await personService.createPerson(
+          person.toObject()
+        );
+        if (createdPerson) {
+          res.status(201).json({
+            _id: createdPerson._id,
+            firstName: createdPerson.firstName,
+            lastName: createdPerson.lastName,
+            birthDate: createdPerson.birthDate,
+            image: createdPerson.image,
+            gender: createdPerson.gender,
+            role: createdPerson.role,
+            email: createdPerson.email,
+            msg: "User Created Successfully!",
+            token: generateToken(
+              createdPerson._id,
+              createdPerson.firstName,
+              createdPerson.role
+            ),
+          });
+        } else {
+          res
+            .status(401)
+            .json({ msg: "Something Went Wrong Invalid User Data!" });
+        }
       }
+    } catch (err) {
+      console.log(err);
+      res.status(404).json({
+        message: err.message,
+      });
     }
   })
 );
 
 personControl.get(
-  "/me",
-  protectPerson,
+  "/:id",
   asyncHandler(async (req, res) => {
     try {
-      const person = await personService.getPersonById(req.person._id);
+      const person = await personService.getPersonById(req.params.id);
       if (person) {
         res.json(person);
       } else {
@@ -106,7 +144,7 @@ personControl.get(
 );
 
 personControl.put(
-  "/",
+  "/:id",
   protectPerson,
   asyncHandler(async (req, res) => {
     try {
@@ -130,7 +168,7 @@ personControl.put(
 );
 
 personControl.delete(
-  "/",
+  "/:id",
   asyncHandler(async (req, res) => {
     try {
       const person = await personService.getPersonById(req.person._id);

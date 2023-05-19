@@ -5,18 +5,21 @@ import patientService from "../services/PatientService.js";
 import Person from "../models/Person.js";
 import personService from "../services/PersonService.js";
 import generateToken from "../utils/generateToken.js";
+import Patient from "../models/Patient.js";
+import notificationServiceAdmin from "../services/NotificationAdminService.js";
 
 const patientControl = express.Router();
 
 patientControl.post(
   "/register",
   asyncHandler(async (req, res) => {
-    const { person, allergies, bloodType, height, weight } = req.body;
+    const { person, allergies, bloodType, height, weight, amount } = req.body;
     const perr = await Person.findById(person);
     const patient = new PatientClass(
       perr.firstName,
       perr.lastName,
       perr.birthDate,
+      perr.image,
       perr.gender,
       perr.role,
       perr.email,
@@ -24,7 +27,8 @@ patientControl.post(
       allergies,
       bloodType,
       height,
-      weight
+      weight,
+      amount
     );
     console.log(patient);
     const createdPatient = await patientService.createPatient({
@@ -33,8 +37,16 @@ patientControl.post(
       bloodType: patient.bloodType,
       height: patient.height,
       weight: patient.weight,
+      amount: patient.amount,
     });
     if (createdPatient) {
+      const notif = await notificationServiceAdmin.createNotification(
+        {
+          action:` A new Patient has Joined CareCove at`,
+          dateNotification: createdPatient.joinedAt,
+          person : perr,
+        }
+      );
       res.status(201).json({
         _id: createdPatient._id,
         person: createdPatient.person,
@@ -42,9 +54,13 @@ patientControl.post(
         bloodType: createdPatient.bloodType,
         height: createdPatient.height,
         weight: createdPatient.weight,
+        amount: createdPatient.amount,
         msg: "Patient created successfully",
-        token: generateToken(patient._id, patient.firstName, patient.role),
+        notif,
+        msgn:"message admin created ",
+        token: generateToken(createdPatient._id, perr.firstName, perr.role),
       });
+      
     } else {
       throw new Error("Something Went Wrong Invalid User Data!");
     }
@@ -55,19 +71,25 @@ patientControl.post(
   asyncHandler(async (req, res) => {
     const email = req.body.email.toLowerCase();
     const password = req.body.password;
-    const patient = await Person.findOne({ email: email });
-    console.log(patient.firstName);
-    if (patient && password == patient.password && patient.role == "patient") {
+    const person = await Person.findOne({ email: email });
+    const patient = await Patient.findOne({ person: person._id });
+    if (
+      person &&
+      password == person.password &&
+      person.role == "patient" &&
+      patient
+    ) {
       res.status(201).json({
-        _id: patient._id,
-        firstName: patient.firstName,
-        lastName: patient.lastName,
-        birthDate: patient.birthDate,
-        gender: patient.gender,
-        role: patient.role,
-        email: patient.email,
+        _id: person._id,
+        firstName: person.firstName,
+        lastName: person.lastName,
+        birthDate: person.birthDate,
+        image: person.image,
+        gender: person.gender,
+        role: person.role,
+        email: person.email,
         msg: "Patient Logged In Successfully!",
-        token: generateToken(patient._id, patient.firstName, patient.role),
+        token: generateToken(patient._id, person.firstName, person.role),
       });
     } else {
       res.status(401).json({ msg: "Invalid Email or Password!" });
@@ -98,14 +120,10 @@ patientControl.get(
 patientControl.put(
   "/:id",
   asyncHandler(async (req, res) => {
-    const patient = await patientService.getPatientById(req.params.id);
+    const patient = await patientService.updatePatient(req.params.id, req.body);
+
     if (patient) {
-      const updateData = req.body;
-      const updatedPatient = await patientService.updatePatient(
-        req.params.id,
-        updateData
-      );
-      res.json({ updatedPatient, message: "Patient Updated" });
+      res.json({ patient, message: "Patient Updated" });
     } else {
       res.status(404).json({ message: "Patient Not Found" });
     }
@@ -115,42 +133,78 @@ patientControl.put(
 patientControl.delete(
   "/:id",
   asyncHandler(async (req, res) => {
-    const patient = await patientService.getPatientById(req.params.id);
-    if (patient) {
-      const deletedPatient = await patientService.deletePatient(req.params.id);
-      res.json({ deletedPatient, message: "Patient Deleted" });
-    } else {
-      res.status(404).json({ message: "Patient Not Found" });
+    try {
+      const patient = await patientService.getPatientById(req.params.id);
+      const person = await Person.findById(patient.person);
+      if (patient) {
+        const deletedPatient = await patientService.deletePatient(
+          req.params.id
+        );
+        const deletedPerson = await personService.deletePerson(person._id);
+        res.json({ deletedPatient, deletedPerson, message: "Patient Deleted" });
+      } else {
+        res.status(404).json({ message: "Patient Not Found" });
+      }
+    } catch (e) {
+      res.status(404).json({ message: e });
     }
   })
 );
 
 patientControl.get(
   "/getByFirstName/:firstName",
-  asyncHandler(async (req, res) =>
-  {
-      try{
-      const patients= await patientService.getPatientByFirstName(req.params.firstName);
+  asyncHandler(async (req, res) => {
+    try {
+      const patients = await patientService.getPatientByFirstName(
+        req.params.firstName
+      );
       res.json(patients);
-      }
-      catch(err)
-      {
-          res.send(404).json({message:"not found"})      }
-      }
-  ));
+    } catch (err) {
+      res.send(404).json({ message: "not found" });
+    }
+  })
+);
 
-  patientControl.get(
-    "/getByLastName/:lastName",
-    asyncHandler(async (req, res) =>
-    {
-        try{
-        const patients= await patientService.getPatientByLastName(req.params.lastName);
-        res.json(patients);
-        }
-        catch(err)
-        {
-            res.send(404).json({message:"not found"})      }
-        }
-    ));
+patientControl.get(
+  "/getByLastName/:lastName",
+  asyncHandler(async (req, res) => {
+    try {
+      const patients = await patientService.getPatientByLastName(
+        req.params.lastName
+      );
+      res.json(patients);
+    } catch (err) {
+      res.send(404).json({ message: "not found" });
+    }
+  })
+);
+
+patientControl.put(
+  "/changePassword/:id",
+  asyncHandler(async (req, res) => {
+    const updatedPatient = await patientService.changePassword(req.params.id, {
+      oldPassword: req.body.oldPassword,
+      newPassword: req.body.newPassword,
+    });
+    if (updatedPatient) {
+      res.json(updatedPatient);
+    } else {
+      res.status(404).json({ message: "Invalid password provided" });
+    }
+  })
+);
+
+patientControl.get(
+  "/getPersonId/:id",
+  asyncHandler(async (req, res) => {
+    try {
+      const patient = await patientService.getPatientById(req.params.id);
+      const person = await Person.findById(patient.person);
+      res.json(person);
+    } catch (err) {
+      res.send(404).json({ message: "not found" });
+    }
+  })
+);
 
 export default patientControl;
