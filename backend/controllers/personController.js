@@ -26,19 +26,19 @@ personControl.post(
   asyncHandler(async (req, res) => {
     const email = req.body.email.toLowerCase();
     const password = req.body.password;
-    const patient = await Person.findOne({ email: email });
-    console.log(patient.firstName);
-    if (patient && password == patient.password && patient.role == "admin") {
+    const person = await Person.findOne({ email: email });
+    console.log(person.firstName);
+    if (person && password == person.password && person.role == "admin") {
       res.status(201).json({
-        _id: patient._id,
-        firstName: patient.firstName,
-        lastName: patient.lastName,
-        birthDate: patient.birthDate,
-        gender: patient.gender,
-        role: patient.role,
-        email: patient.email,
+        _id: person._id,
+        firstName: person.firstName,
+        lastName: person.lastName,
+        birthDate: person.birthDate,
+        gender: person.gender,
+        role: person.role,
+        email: person.email,
         msg: "Admin Logged In Successfully!",
-        token: generateToken(patient._id, patient.firstName, patient.role),
+        token: generateToken(person._id, person.firstName, person.role),
       });
     } else {
       res.status(401).json({ msg: "Invalid Email or Password!" });
@@ -182,6 +182,20 @@ personControl.delete(
       res.status(404).json({
         message: err.message,
       });
+    }
+  })
+);
+personControl.put(
+  "/changePassword/:id",
+  asyncHandler(async (req, res) => {
+    const updatedPerson = await personService.changePassword(req.params.id, {
+      oldPassword: req.body.oldPassword,
+      newPassword: req.body.newPassword,
+    });
+    if (updatedPerson) {
+      res.json(updatedPerson);
+    } else {
+      res.status(404).json({ message: "Invalid password provided" });
     }
   })
 );
