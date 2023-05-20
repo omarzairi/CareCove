@@ -59,6 +59,7 @@ doctorControl.post(
         description: createdDoctor.description,
         experience: createdDoctor.experience,
         msg: " Doctor created successfully",
+        token: generateToken(createdDoctor._id, docc.firstName, docc.role),
       });
     } else {
       throw new Error("Something Went Wrong Invalid User Data!");
