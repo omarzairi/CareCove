@@ -65,7 +65,7 @@ doctorControl.post(
         description: createdDoctor.description,
         experience: createdDoctor.experience,
         msg: " Doctor created successfully",
-        notif,
+        notifica:notif,
         msgn:"message admin created"
       });
     } else {
