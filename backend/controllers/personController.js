@@ -59,26 +59,24 @@ personControl.post(
   asyncHandler(async (req, res) => {
     try {
       req.body.email = req.body.email.toLowerCase();
-      const {
-        firstName,
-        lastName,
-        birthDate,
-
-        gender,
-        role,
-        email,
-        password,
-      } = req.body;
+      const { firstName, lastName, birthDate, gender, role, email, password } =
+        req.body;
 
       const exist = await Person.findOne({ email });
       if (exist) {
         res.status(401).json({ msg: "User With This Email Already Exists!" });
       } else {
-        const image = req.file.path;
-        console.log(image);
-        const result = await cloudinary.uploader.upload(image, {
-          folder: "person",
-        });
+        let result = {
+          secure_url:
+            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+        };
+        if (req.file) {
+          const image = req.file.path;
+
+          result = await cloudinary.uploader.upload(image, {
+            folder: "person",
+          });
+        }
         const person = new PersonClass(
           firstName,
           lastName,
