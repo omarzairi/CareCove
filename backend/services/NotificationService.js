@@ -21,6 +21,13 @@ const notificationService = {
     }
     return notification;
   },
+  async getNotificationByDoctorId(doctorId) {
+    const notification = await Notification.find({doctorId})
+    if (!notification) {
+      throw new Error("Notification not found");
+    }
+    return notification;
+  },
   async getAllNotifications() {
     const notifications = await Notification.find();
     return notifications.map((notification) => notification.toObject());
@@ -47,6 +54,9 @@ const notificationService = {
     }
     await Notification.findByIdAndDelete(notificationId);
     return notification.toObject();
+  },
+  async deleteAllNotif() {
+    await Notification.deleteMany({});
   },
 };
 
