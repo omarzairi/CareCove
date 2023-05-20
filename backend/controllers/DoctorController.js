@@ -51,9 +51,9 @@ doctorControl.post(
     });
     if (createdDoctor) {
       const notif = await notificationServiceAdmin.createNotification({
-        action:` A new Doctor has Joined CareCove at`,
+        action: ` A new Doctor has Joined CareCove at`,
         dateNotification: createdDoctor.joinedAt,
-        person : docc,
+        person: docc,
       });
       res.status(201).json({
         _id: createdDoctor._id,
@@ -65,8 +65,9 @@ doctorControl.post(
         description: createdDoctor.description,
         experience: createdDoctor.experience,
         msg: " Doctor created successfully",
-        notifica:notif,
-        msgn:"message admin created"
+        token: generateToken(createdDoctor._id, docc.firstName, docc.role),
+        notifica: notif,
+        msgn: "message admin created",
       });
     } else {
       throw new Error("Something Went Wrong Invalid User Data!");

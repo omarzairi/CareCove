@@ -39,6 +39,25 @@ notificationControl.get(
   })
 );
 notificationControl.get(
+  "/doctor/:id",
+  asyncHandler(async (req, res) => {
+    try {
+      const notification = await notificationService.getNotificationByDoctorId(
+        req.params.id
+      );
+      if (notification) {
+        res.json(notification);
+      } else {
+        res.status(404).json({ message: "Notification Not Found" });
+      }
+    } catch (err) {
+      res.status(404).json({
+        message: err.message,
+      });
+    }
+  })
+);
+notificationControl.get(
   "/",
   asyncHandler(async (req, res) => {
     try {
@@ -94,4 +113,10 @@ notificationControl.delete(
     }
   })
 );
+notificationControl.delete(
+  "/deleteall",
+  asyncHandler(async (req,res)=>{
+      await notificationService.deleteAllNotif();
+  })
+)
 export default notificationControl;
