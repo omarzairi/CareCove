@@ -5,7 +5,7 @@ const consultationSchema = new mongoose.Schema({
   patientId: { type: mongoose.Schema.Types.ObjectId,required:true, ref: "Patient" },
   marks: { type: String,required:true},
   medicine: { type: String,required:true},
-  date: { type: Date,required:true},
+  date: { type: Date},
 });
 
 const Consultation = mongoose.model("Consultation", consultationSchema);
