@@ -1,13 +1,17 @@
 import express from "express";
 import asyncHandler from "express-async-handler";
 import consultationService from "../services/ConsultationService.js";
+import protectDoctor from "../middleware/doctorAuth.js";
 
 const consultationControl = express.Router();
 
 consultationControl.post(
-  "/",
+ 
+  "/add",
+  protectDoctor,
   asyncHandler(async (req, res) => {
-    const { doctorId, patientId, marks, medicine, date } = req.body;
+    const { patientId, marks, medicine, date } = req.body;
+    const doctorId = req.doctor._id;
     const createdConsultation = await consultationService.createConsultation({
       doctorId,
       patientId,

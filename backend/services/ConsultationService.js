@@ -2,13 +2,13 @@
 import Consultation from "../models/Consultation.js";
 
 const consultationService = {
-  async createConsultation({ doctorId, patientId, marks, medicine }) {
+  async createConsultation({ doctorId, patientId, marks, medicine,date }) {
     const consultation = await Consultation.create({
       doctorId,
       patientId,
       marks,
       medicine,
-      date : new Date(),
+      date 
     });
     return await consultation.save();
   },
