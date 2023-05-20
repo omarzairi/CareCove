@@ -56,7 +56,7 @@ patientControl.post(
         weight: createdPatient.weight,
         amount: createdPatient.amount,
         msg: "Patient created successfully",
-        notif,
+        notifica:notif,
         msgn:"message admin created ",
         token: generateToken(createdPatient._id, perr.firstName, perr.role),
       });
