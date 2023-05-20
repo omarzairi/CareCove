@@ -188,10 +188,12 @@ personControl.delete(
 personControl.put(
   "/changePassword/:id",
   asyncHandler(async (req, res) => {
+    console.log(req.params.id);
     const updatedPerson = await personService.changePassword(req.params.id, {
       oldPassword: req.body.oldPassword,
       newPassword: req.body.newPassword,
     });
+    console.log(updatedPerson);
     if (updatedPerson) {
       res.json(updatedPerson);
     } else {
