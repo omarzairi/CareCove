@@ -41,7 +41,7 @@ const personService = {
   },
   async changePassword(personId,{oldPassword,newPassword}) 
   {
-    const person=await Person.findById(personId).populate("person");
+    const person=await Person.findById(personId);
     if(person)
     {
     if (person.password==oldPassword)
