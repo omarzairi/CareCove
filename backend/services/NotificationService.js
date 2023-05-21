@@ -22,7 +22,9 @@ const notificationService = {
     return notification;
   },
   async getNotificationByDoctorId(doctorId) {
-    const notification = await Notification.find({doctorId})
+    const notification = await Notification.find({ person: doctorId }).sort({
+      dateNotification: -1,
+    });
     if (!notification) {
       throw new Error("Notification not found");
     }

@@ -49,9 +49,6 @@ RendezVousControl.post(
               heureRV,
             });
             if (createdRendezVous) {
-              patient.amount = patient.amount - doc.price;
-              await patient.save();
-
               time.isAvailable = false;
               await calender.save();
 
@@ -275,6 +272,40 @@ RendezVousControl.get(
         .sort({ dateRV: 1 })
         .populate({
           path: "doctor",
+          select: "-password",
+          populate: {
+            path: "person",
+            model: "Person",
+            select: "-password",
+          },
+        });
+      if (rv) {
+        res.json(rv);
+      } else {
+        res.status(404).json({
+          message: "no appointments",
+        });
+      }
+    } catch (err) {
+      res.status(404).json({ message: err.message });
+    }
+  })
+);
+
+RendezVousControl.get(
+  "/doctor/getAllMyPastRV",
+  protectDoctor,
+  asyncHandler(async (req, res) => {
+    try {
+      const rv = await RendezVous.find({
+        doctor: req.doctor._id,
+        dateRV: {
+          $lt: new Date(),
+        },
+      })
+        .sort({ dateRV: -1 })
+        .populate({
+          path: "Patient",
           select: "-password",
           populate: {
             path: "person",

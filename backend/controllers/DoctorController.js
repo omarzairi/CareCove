@@ -8,6 +8,7 @@ import personService from "../services/PersonService.js";
 import generateToken from "../utils/generateToken.js";
 import protectDoctor from "../middleware/doctorAuth.js";
 import notificationServiceAdmin from "../services/NotificationAdminService.js";
+import notificationService from "../services/NotificationService.js";
 const doctorControl = express.Router();
 doctorControl.post(
   "/register",
@@ -55,6 +56,13 @@ doctorControl.post(
         dateNotification: createdDoctor.joinedAt,
         person: docc,
       });
+      const notifDoct = await notificationService.createNotification({
+        action: `Dr. ${
+          docc.firstName + " " + docc.lastName
+        } Welcome to CareCove!`,
+        dateNotification: createdDoctor.joinedAt,
+        person: docc._id,
+      });
       res.status(201).json({
         _id: createdDoctor._id,
         person: createdDoctor.person,
@@ -67,6 +75,7 @@ doctorControl.post(
         msg: " Doctor created successfully",
         token: generateToken(createdDoctor._id, docc.firstName, docc.role),
         notifica: notif,
+        notifDoct: notifDoct,
         msgn: "message admin created",
       });
     } else {
@@ -226,6 +235,20 @@ doctorControl.get(
       res.json(person);
     } catch (err) {
       res.send(404).json({ message: "not found" });
+    }
+  })
+);
+doctorControl.put(
+  "/changePassword/:id",
+  asyncHandler(async (req, res) => {
+    const updatedDoct = await doctorService.changePassword(req.params.id, {
+      oldPassword: req.body.oldPassword,
+      newPassword: req.body.newPassword,
+    });
+    if (updatedDoct) {
+      res.json(updatedDoct);
+    } else {
+      res.status(404).json({ message: "Invalid password provided" });
     }
   })
 );
