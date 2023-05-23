@@ -27,7 +27,6 @@ personControl.post(
     const email = req.body.email.toLowerCase();
     const password = req.body.password;
     const person = await Person.findOne({ email: email });
-    console.log(person.firstName);
     if (person && password == person.password && person.role == "admin") {
       res.status(201).json({
         _id: person._id,
@@ -87,7 +86,6 @@ personControl.post(
           email,
           password
         );
-        console.log(person.toObject());
         const createdPerson = await personService.createPerson(
           person.toObject()
         );
@@ -115,7 +113,6 @@ personControl.post(
         }
       }
     } catch (err) {
-      console.log(err);
       res.status(404).json({
         message: err.message,
       });
@@ -186,12 +183,11 @@ personControl.delete(
 personControl.put(
   "/changePassword/:id",
   asyncHandler(async (req, res) => {
-    console.log(req.params.id);
     const updatedPerson = await personService.changePassword(req.params.id, {
       oldPassword: req.body.oldPassword,
       newPassword: req.body.newPassword,
     });
-    console.log(updatedPerson);
+
     if (updatedPerson) {
       res.json(updatedPerson);
     } else {

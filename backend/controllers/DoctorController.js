@@ -54,7 +54,7 @@ doctorControl.post(
       const notif = await notificationServiceAdmin.createNotification({
         action: ` A new Doctor has Joined CareCove at`,
         dateNotification: createdDoctor.joinedAt,
-        person: docc,
+        person: docc._id,
       });
       const notifDoct = await notificationService.createNotification({
         action: `Dr. ${
